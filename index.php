@@ -4,10 +4,11 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Los Audaces</title>
-	<link href="css/style.css" rel="stylesheet">
-	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
-</head>
+	<meta name="description" content="Participa en emocionantes sorteos con Los Audaces y gana premios increíbles">
+    <title>Los Audaces - Sorteos y Rifas</title>
+    <link href="css/style.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="resources/logo.png" type="image/png"></head>
 
 <body>
 	<div class="page-wrapper">

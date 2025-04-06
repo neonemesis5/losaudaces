@@ -101,7 +101,7 @@
 	top: 0;
 	left: 0;
 	width: 100%;
-	height: 100%;
+	height: 65%;
 	object-fit: cover;
 	z-index: 0;
 	filter: brightness(0.7);
@@ -128,7 +128,8 @@
   .lottery-promo {
 	position: relative;
 	z-index: 2;
-	background-color: var(--color-overlay);
+	/* background-color: var(--color-overlay); */
+	background-color: rgb(146 100 224 / 55%);
 	padding: 2rem;
 	border-radius: 8px;
 	max-width: 800px;
@@ -144,9 +145,17 @@
   }
   
   .lottery-promo button {
-	background-color: var(--color-secondary);
+	/* background-color: var(--color-secondary); */
+	background: linear-gradient(135deg, 
+	#f5d742 0%, 
+	#e5c028 25%, 
+	#d4af37 50%, 
+	#e5c028 75%, 
+	#f5d742 100%);
 	color: var(--color-primary);
-	border: none;
+	/* border: none; */
+	border: 1px solid white; /* Primera línea blanca */
+	outline: 1px solid white; /* Segunda línea blanca */
 	padding: 1rem 2.5rem;
 	font-size: 1.2rem;
 	font-weight: bold;
@@ -158,7 +167,43 @@
 	letter-spacing: 1px;
 	box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
   }
-  
+   /* Estilo base dorado */
+/*  .lottery-promo button {
+    
+     background: linear-gradient(135deg, 
+                #f5d742 0%, 
+                #e5c028 25%, 
+                #d4af37 50%, 
+                #e5c028 75%, 
+                #f5d742 100%);
+    color: #000;
+    border: none;
+    padding: 1rem 2.5rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border-radius: 50px;
+    cursor: pointer;
+    margin-top: 1.5rem;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.6);
+}
+.lottery-promo button::before {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    right: -3px;
+    bottom: -3px;
+    border: 2px solid white;
+    border-radius: 50px;
+    z-index: -1;
+} */
+
   .lottery-promo button:hover {
 	background-color: var(--color-accent);
 	color: var(--color-text);
@@ -166,6 +211,27 @@
 	box-shadow: 0 6px 20px rgba(46, 204, 113, 0.5);
   }
   
+  /* .lottery-promo button:hover {
+    background: linear-gradient(135deg, 
+                #ffdf4a 0%, 
+                #f5d033 25%, 
+                #e5c028 50%, 
+                #f5d033 75%, 
+                #ffdf4a 100%);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.8);
+    color: #000;
+}
+/* Efecto de brillo al hacer hover */
+/*.lottery-promo button:hover::before {
+    animation: shine 1.5s infinite;
+}
+
+@keyframes shine {
+    0% { opacity: 0.8; }
+    50% { opacity: 1; }
+    100% { opacity: 0.8; }
+} */
   /* Slider premium */
   .premios-section {
 	padding: 5rem 2rem;
@@ -192,6 +258,12 @@
 	position: relative;
 	z-index: 2;
   }
+  h2.section-title {
+    /* background: linear-gradient(to right, #FFD700, #DAA520); */
+    /* -webkit-background-clip: text; */
+    /* -webkit-text-fill-color: transparent; */
+    /* text-shadow: 1px 1px 0px white, -1px -2px 3px white, -1px 1px 7px white, 1px 1px 0px white; */
+}
   
   .section-title::after {
 	content: '';
