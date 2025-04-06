@@ -43,7 +43,7 @@
 				</div>
 				<div class="purple-bar">&nbsp;</div>
 				<div class="lottery-promo">
-					<div>HOY PUEDE SER TU DÍA DE SUERTE</div>
+					<div><strong>HOY PUEDE SER TU DÍA DE SUERTE</strong></div>
 					<div>Participa en nuestros fascinantes sorteos</div>
 					<div>¡La suerte está de tu lado!</div>
 					<button>Comprar Boleto</button>
