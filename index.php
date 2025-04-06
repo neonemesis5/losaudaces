@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Los Audaces</title>
+	<style>
+		/* Reset básico */
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+			font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+			background-color: black;
+			font-size: 1rem;
+		}
+
+		body {
+			background-color: black;
+			color: #333;
+			min-height: 100vh;
+		}
+
+		.page-wrapper {
+			display: flex;
+			flex-direction: column;
+			min-height: 100vh;
+			width: 100%;
+		}
+
+		/* Header */
+		.main-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			width: 100%;
+			/* background-color: #fff; */
+			padding: 10px 0;
+		}
+
+		.logo-container {
+			flex: 0 0 40%;
+			max-width: 40%;
+			padding: 0 20px;
+		}
+
+		.logo {
+			max-width: 200px;
+			height: auto;
+			display: block;
+		}
+
+		.menu-container {
+			flex: 0 0 60%;
+			max-width: 60%;
+			display: flex;
+			justify-content: flex-end;
+			align-items: center;
+			padding: 0 20px;
+			position: relative;
+			/* background-color: lightcoral; */
+			height: 100%;
+		}
+
+		/* Navegación principal */
+		.main-nav ul {
+			display: flex;
+			list-style: none;
+			height: 100%;
+			align-items: center;
+		}
+
+		.main-nav li {
+			margin-left: 25px;
+		}
+
+		.main-nav a {
+			text-decoration: none;
+			color: white;
+			font-weight: bold;
+			padding: 8px 12px;
+			display: block;
+		}
+
+		/* Contenido principal */
+		.main-content {
+			flex-grow: 1;
+			background-color: lightcyan;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			width: 100%;
+			position: relative;
+		}
+
+		.hero-section {
+			width: 100%;
+			text-align: center;
+			color: white;
+			position: relative;
+		}
+
+		.hero-text {
+			background-color: gray;
+			padding: 20px 0;
+		}
+
+		.hero-text h1 {
+			font-size: 2.5rem;
+			margin-bottom: 10px;
+		}
+
+		.purple-bar {
+			height: 55px;
+			width: 100%;
+			background-color: #4d164f;
+			z-index: 1;
+		}
+
+		.lottery-promo {
+			width: 100%;
+			text-align: center;
+			padding: 30px 0;
+			position: relative;
+			z-index: 2;
+			background-color: rgba(0,0,0,0.5);
+		}
+
+		.lottery-promo div {
+			margin: 15px 0;
+			font-size: 1.5rem;
+			font-weight: bold;
+			color: white;
+		}
+
+		.lottery-promo button {
+			background-color: #ff5722;
+			color: white;
+			border: none;
+			padding: 12px 30px;
+			font-size: 1.2rem;
+			border-radius: 5px;
+			cursor: pointer;
+			margin-top: 20px;
+		}
+
+		.background-image {
+			width: 100%;
+			height: auto;
+			position: absolute;
+			top: 0;
+			left: 0;
+			z-index: 1;
+		}
+
+		/* Footer */
+		.main-footer {
+			display: flex;
+			width: 100%;
+		}
+
+		.left-footer {
+			flex: 0 0 30%;
+			background-color: lightgoldenrodyellow;
+			padding: 15px;
+		}
+
+		.right-footer {
+			flex: 0 0 70%;
+			background-color: lightsalmon;
+			padding: 15px;
+		}
+
+		/* Menú hamburguesa (mobile) */
+		.menu-toggle {
+			display: none;
+			background: none;
+			border: none;
+			cursor: pointer;
+			padding: 10px;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			width: 40px;
+			height: 40px;
+		}
+
+		.menu-toggle span {
+			display: block;
+			width: 25px;
+			height: 3px;
+			background: black;
+			margin: 4px 0;
+			transition: all 0.3s ease;
+		}
+
+		/* Responsive */
+		@media (max-width: 768px) {
+			.main-header {
+				flex-wrap: wrap;
+			}
+
+			.logo-container,
+			.menu-container {
+				flex: 0 0 100%;
+				max-width: 100%;
+			}
+
+			.menu-container {
+				justify-content: flex-end;
+				padding: 10px 20px;
+				min-height: 60px;
+			}
+
+			.main-nav {
+				position: absolute;
+				top: 100%;
+				right: 0;
+				width: 100%;
+				background-color: lightcoral;
+				max-height: 0;
+				overflow: hidden;
+				transition: max-height 0.3s ease;
+			}
+
+			.main-nav.active {
+				max-height: 500px;
+			}
+
+			.main-nav ul {
+				flex-direction: column;
+				align-items: flex-end;
+				padding: 10px 20px;
+			}
+
+			.main-nav li {
+				margin: 10px 0;
+				width: 100%;
+				text-align: right;
+			}
+
+			.menu-toggle {
+				display: flex;
+			}
+
+			.menu-toggle.active span:nth-child(1) {
+				transform: rotate(45deg) translate(5px, 5px);
+			}
+
+			.menu-toggle.active span:nth-child(2) {
+				opacity: 0;
+			}
+
+			.menu-toggle.active span:nth-child(3) {
+				transform: rotate(-45deg) translate(7px, -6px);
+			}
+
+			.main-footer {
+				flex-direction: column;
+			}
+
+			.left-footer,
+			.right-footer {
+				flex: 0 0 100%;
+			}
+
+			.hero-text h1 {
+				font-size: 1.8rem;
+			}
+
+			.lottery-promo div {
+				font-size: 1.2rem;
+			}
+		}
+
+		@media (max-width: 480px) {
+			.main-nav a {
+				padding: 10px 15px;
+			}
+
+			.menu-toggle {
+				padding: 0 15px;
+			}
+
+			.hero-text h1 {
+				font-size: 1.5rem;
+			}
+
+			.lottery-promo div {
+				font-size: 1rem;
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<div class="page-wrapper">
+		<!-- Header -->
+		<header class="main-header">
+			<div class="logo-container">
+				<img src="resources/logo.png" alt="Los Audaces" class="logo">
+			</div>
+			<div class="menu-container">
+				<button class="menu-toggle">
+					<span></span>
+					<span></span>
+					<span></span>
+				</button>
+				<nav class="main-nav">
+					<ul>
+						<li><a href="#">Rifas</a></li>
+						<li><a href="#">Premios</a></li>
+						<li><a href="#">Contacto</a></li>
+						<li><a href="#">Login</a></li>
+					</ul>
+				</nav>
+			</div>
+		</header>
+
+		<!-- Contenido principal -->
+		<main class="main-content">
+			<div class="hero-section">
+				<img src="resources/image2.png" alt="Fondo de sorteos" class="background-image">
+				<div class="hero-text">
+					<h1>¡Cambia tu vida con un solo boleto! ¡Participa ya!</h1>
+				</div>
+				<div class="purple-bar">&nbsp;</div>
+				<div class="lottery-promo">
+					<div>HOY PUEDE SER TU DÍA DE SUERTE</div>
+					<div>Participa en nuestros fascinantes sorteos</div>
+					<div>¡La suerte está de tu lado!</div>
+					<button>Comprar Boleto</button>
+				</div>
+			</div>
+		</main>
+
+		<!-- Footer -->
+		<footer class="main-footer">
+			<div class="left-footer">Pie Izquierdo</div>
+			<div class="right-footer">Pie Derecho</div>
+		</footer>
+	</div>
+
+	<script>
+		document.addEventListener('DOMContentLoaded', function() {
+			const menuToggle = document.querySelector('.menu-toggle');
+			const mainNav = document.querySelector('.main-nav');
+
+			menuToggle.addEventListener('click', function() {
+				mainNav.classList.toggle('active');
+				menuToggle.classList.toggle('active');
+			});
+
+			// Cerrar menú al hacer clic en enlaces (mobile)
+			const navLinks = document.querySelectorAll('.main-nav a');
+			navLinks.forEach(link => {
+				link.addEventListener('click', function() {
+					if (window.innerWidth <= 768) {
+						mainNav.classList.remove('active');
+						menuToggle.classList.remove('active');
+					}
+				});
+			});
+		});
+	</script>
+</body>
+
+</html>
