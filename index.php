@@ -5,10 +5,11 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="description" content="Participa en emocionantes sorteos con Los Audaces y gana premios increíbles">
-    <title>Los Audaces - Sorteos y Rifas</title>
-    <link href="css/style.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="icon" href="resources/logo.png" type="image/png"></head>
+	<title>Los Audaces - Sorteos y Rifas</title>
+	<link href="css/style.css" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+	<link rel="icon" href="resources/logo.png" type="image/png">
+</head>
 
 <body>
 	<div class="page-wrapper">
@@ -37,11 +38,11 @@
 		<!-- Contenido principal -->
 		<main class="main-content">
 			<div class="hero-section">
-				<img src="resources/image2.png" alt="Fondo de sorteos" class="background-image">
+				<div class="purple-bar"></div>
 				<div class="hero-text">
 					<h1>¡Cambia tu vida con un solo boleto! ¡Participa ya!</h1>
 				</div>
-				<div class="purple-bar">&nbsp;</div>
+				<img src="resources/image2.png" alt="Fondo de sorteos" class="background-image">
 				<div class="lottery-promo">
 					<div><strong>HOY PUEDE SER TU DÍA DE SUERTE</strong></div>
 					<div>Participa en nuestros fascinantes sorteos</div>
@@ -64,66 +65,76 @@
 		</main>
 
 		<!-- Footer -->
-		<footer class="main-footer">
-			<div class="left-footer">
-				<img src="resources/logo.png" alt="Los Audaces" class="footer-logo">
-			</div>
-			<div class="right-footer">
-				<div class="footer-grid">
-					<div class="footer-column">
-						<h3>Rifas</h3>
-						<ul>
-							<li>Accesorios</li>
-							<li>Números Ganadores</li>
-							<li>Próximos Sorteos</li>
+		<footer class="main-footer" role="contentinfo">
+			<div class="footer-container">
+				<div class="footer-brand">
+					<img src="resources/logo.png" alt="Los Audaces" class="footer-logo" width="150" height="50">
+				</div>
+
+				<div class="footer-content">
+					<div class="footer-section">
+						<h3 class="footer-heading">Rifas</h3>
+						<ul class="footer-list">
+							<li><a href="#" class="footer-link">Accesorios</a></li>
+							<li><a href="#" class="footer-link">Números Ganadores</a></li>
+							<li><a href="#" class="footer-link">Próximos Sorteos</a></li>
 						</ul>
 					</div>
-					<div class="footer-column">
-						<h3>Tienda</h3>
-						<ul>
-							<li><strong>Direccion:</strong> Av. 6 # 9-76 Centro Cucuta - Colombia</li>
-							<li><strong>Email:</strong> admin@losaudaces.com</li>
-							<li><strong>Telefono:</strong> +57-3204563721</li>
-						</ul>
+
+					<div class="footer-section">
+						<h3 class="footer-heading">Tienda</h3>
+						<address class="footer-address">
+							<p><strong>Dirección:</strong> Av. 6 # 9-76 Centro Cucuta - Colombia</p>
+							<p><strong>Email:</strong> <a href="mailto:admin@losaudaces.com" class="footer-link">admin@losaudaces.com</a></p>
+							<p><strong>Teléfono:</strong> <a href="tel:+573204563721" class="footer-link">+57-3204563721</a></p>
+						</address>
 					</div>
-					<div class="footer-column">
-						<h3>Política</h3>
-						<ul>
-							<li>Términos y condiciones</li>
-							<li>Política de reembolso</li>
-							<li>Política de privacidad</li>
-							<li>Política de envío</li>
-							<li>Política de cookies</li>
-							<li>FAQ</li>
+
+					<div class="footer-section">
+						<h3 class="footer-heading">Política</h3>
+						<ul class="footer-list">
+							<li><a href="#" class="footer-link">Términos y condiciones</a></li>
+							<li><a href="#" class="footer-link">Política de reembolso</a></li>
+							<li><a href="#" class="footer-link">Política de privacidad</a></li>
+							<li><a href="#" class="footer-link">Política de envío</a></li>
+							<li><a href="#" class="footer-link">Política de cookies</a></li>
+							<li><a href="#" class="footer-link">FAQ</a></li>
 						</ul>
 					</div>
 				</div>
+			</div>
+
+			<div class="footer-bottom">
+				<p class="copyright">&copy; 2023 Los Audaces. Todos los derechos reservados.</p>
 			</div>
 		</footer>
 	</div>
 
 	<script>
-		// document.addEventListener('DOMContentLoaded', function() {
-		// 	const menuToggle = document.querySelector('.menu-toggle');
-		// 	const mainNav = document.querySelector('.main-nav');
+		document.addEventListener('DOMContentLoaded', function() {
+			const menuToggle = document.querySelector('.menu-toggle');
+			const mainNav = document.querySelector('.main-nav');
 
-		// 	menuToggle.addEventListener('click', function() {
-		// 		mainNav.classList.toggle('active');
-		// 		menuToggle.classList.toggle('active');
-		// 	});
+			menuToggle.addEventListener('click', function() {
+				this.classList.toggle('active');
+				mainNav.classList.toggle('active');
 
-		// 	// Cerrar menú al hacer clic en enlaces (mobile)
-		// 	const navLinks = document.querySelectorAll('.main-nav a');
-		// 	navLinks.forEach(link => {
-		// 		link.addEventListener('click', function() {
-		// 			if (window.innerWidth <= 768) {
-		// 				mainNav.classList.remove('active');
-		// 				menuToggle.classList.remove('active');
-		// 			}
-		// 		});
-		// 	});
-		// });
+				// Cambiar aria-expanded para accesibilidad
+				const isExpanded = this.getAttribute('aria-expanded') === 'true';
+				this.setAttribute('aria-expanded', !isExpanded);
+			});
 
+			// Cerrar menú al hacer clic en enlaces (mobile)
+			document.querySelectorAll('.main-nav a').forEach(link => {
+				link.addEventListener('click', function() {
+					if (window.innerWidth <= 768) {
+						menuToggle.classList.remove('active');
+						mainNav.classList.remove('active');
+						menuToggle.setAttribute('aria-expanded', 'false');
+					}
+				});
+			});
+		});
 
 		// Slider functionality
 		document.addEventListener('DOMContentLoaded', function() {

@@ -18,6 +18,8 @@
 	box-sizing: border-box;
 	font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
 		'Helvetica Neue', Arial, sans-serif;
+		color: inherit; /* Utiliza el color heredado del elemento padre */
+		text-decoration: none; /* Opcional: Quita el subrayado del enlace */
 }
 
 body {
@@ -97,10 +99,20 @@ body {
 	justify-content: center;
 	align-items: center;
 	text-align: center;
-	padding-top: 80px;
+	padding-top: 60px;
+}
+.purple-bar {
+	position: relative;
+	height: 70px;
+	width: 100%;
+	background-color: purple;
+	z-index: 1;
+	backdrop-filter: blur(5px);
+	background-color: rgba(60, 16, 136, 0.75);
 }
 
 .background-image {
+	/* padding-top: 10px; */
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -368,7 +380,7 @@ h2.section-title {
 
 /* Footer premium */
 .main-footer {
-	background-color: #111;
+	background-color: black;
 	padding: 4rem 2rem;
 	color: var(--color-text);
 }
@@ -467,9 +479,16 @@ h2.section-title {
 		background: transparent;
 		border: none;
 		cursor: pointer;
+		padding: 0;
 		z-index: 1001;
 	}
-
+	.menu-toggle span {
+		display: block;
+		width: 100%;
+		height: 3px;
+		background-color: var(--color-text);
+		transition: all 0.3s ease;
+	}
 	.main-nav {
 		position: fixed;
 		top: 0;
@@ -533,4 +552,62 @@ h2.section-title {
 	.section-title {
 		font-size: 2rem;
 	}
+}
+
+/* Mostrar menú hamburguesa solo en móvil */
+@media (max-width: 768px) {
+    .menu-toggle {
+        display: flex;
+    }
+    
+    .main-nav {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 80%;
+        height: 100vh;
+        background-color: var(--color-primary);
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        transition: right 0.3s ease;
+        z-index: 999;
+        padding-top: 80px;
+    }
+    
+    .main-nav.active {
+        right: 0;
+    }
+    
+    .main-nav ul {
+        flex-direction: column;
+        gap: 2rem;
+        width: 100%;
+        padding: 0 20px;
+    }
+    
+    .main-nav li {
+        margin: 0;
+        width: 100%;
+        text-align: center;
+    }
+    
+    .main-nav a {
+        display: block;
+        padding: 1rem;
+        font-size: 1.2rem;
+    }
+    
+    /* Animación del icono hamburguesa */
+    .menu-toggle.active span:nth-child(1) {
+        transform: translateY(10px) rotate(45deg);
+    }
+    
+    .menu-toggle.active span:nth-child(2) {
+        opacity: 0;
+    }
+    
+    .menu-toggle.active span:nth-child(3) {
+        transform: translateY(-10px) rotate(-45deg);
+    }
 }
