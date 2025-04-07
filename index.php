@@ -1,3 +1,40 @@
+<?php
+// Configuraciones de seguridad
+header("X-Frame-Options: DENY");
+header("X-XSS-Protection: 1; mode=block");
+header("X-Content-Type-Options: nosniff");
+header("Referrer-Policy: strict-origin-when-cross-origin");
+header("Content-Security-Policy: default-src 'self' https: 'unsafe-inline' 'unsafe-eval'; img-src 'self' data:;");
+
+// Configuración de sesión segura
+session_start([
+    'cookie_lifetime' => 86400,
+    'cookie_secure' => true,
+    'cookie_httponly' => true,
+    'cookie_samesite' => 'Strict',
+    'use_strict_mode' => true
+]);
+
+// Protección contra session fixation
+session_regenerate_id(true);
+
+// Configuración de zona horaria
+date_default_timezone_set('America/Bogota');
+
+// Protección básica contra inyecciones
+if (isset($_SERVER['QUERY_STRING'])) {
+    $queryString = $_SERVER['QUERY_STRING'];
+    if (preg_match('/[^a-zA-Z0-9_-]/', $queryString)) {
+        header("HTTP/1.1 400 Bad Request");
+        exit('Solicitud inválida');
+    }
+}
+
+// Configuración de manejo de errores
+ini_set('display_errors', 0);
+ini_set('log_errors', 1);
+ini_set('error_log', __DIR__ . '/error.log');
+?>
 <!DOCTYPE html>
 <html lang="es">
 
