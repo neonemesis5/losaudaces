@@ -62,32 +62,32 @@
 					<div class="slider-dots"></div>
 				</div>
 			</section>
+
 		</main>
 
 		<!-- Footer -->
 		<footer class="main-footer" role="contentinfo">
 			<div class="footer-container">
 				<div class="footer-brand">
-					<img src="resources/logo.png" alt="Los Audaces" class="footer-logo" width="150" height="50">
+					<img src="resources/logo.png" alt="Los Audaces" class="footer-logo" width="150" height="auto">
 				</div>
 
 				<div class="footer-content">
 					<div class="footer-section">
 						<h3 class="footer-heading">Rifas</h3>
 						<ul class="footer-list">
-							<li><a href="#" class="footer-link">Accesorios</a></li>
+							<li><a href="#" class="footer-link">Accessorios</a></li>
 							<li><a href="#" class="footer-link">Números Ganadores</a></li>
 							<li><a href="#" class="footer-link">Próximos Sorteos</a></li>
 						</ul>
 					</div>
-
 					<div class="footer-section">
 						<h3 class="footer-heading">Tienda</h3>
-						<address class="footer-address">
-							<p><strong>Dirección:</strong> Av. 6 # 9-76 Centro Cucuta - Colombia</p>
-							<p><strong>Email:</strong> <a href="mailto:admin@losaudaces.com" class="footer-link">admin@losaudaces.com</a></p>
-							<p><strong>Teléfono:</strong> <a href="tel:+573204563721" class="footer-link">+57-3204563721</a></p>
-						</address>
+						<ul class="footer-list">
+							<li>Dirección: Av. 6 # 9-76 Centro Cucuta - Colombia</li>
+							<li>Email: <a href="mailto:admin@losaudaces.com" class="footer-link">admin@losaudaces.com</a></li>
+							<li>Teléfono: <a href="tel:+573204563721" class="footer-link">+57-3204563721</a></li>
+						</ul>
 					</div>
 
 					<div class="footer-section">
@@ -112,6 +112,10 @@
 
 	<script>
 		document.addEventListener('DOMContentLoaded', function() {
+			const slider = document.querySelector('.slider');
+			const dotsContainer = document.querySelector('.slider-dots');
+			const prevBtn = document.querySelector('.prev-btn');
+			const nextBtn = document.querySelector('.next-btn');
 			const menuToggle = document.querySelector('.menu-toggle');
 			const mainNav = document.querySelector('.main-nav');
 
@@ -134,14 +138,6 @@
 					}
 				});
 			});
-		});
-
-		// Slider functionality
-		document.addEventListener('DOMContentLoaded', function() {
-			const slider = document.querySelector('.slider');
-			const dotsContainer = document.querySelector('.slider-dots');
-			const prevBtn = document.querySelector('.prev-btn');
-			const nextBtn = document.querySelector('.next-btn');
 
 			// Obtener todas las imágenes de premios de la carpeta
 			const premiosImages = [
