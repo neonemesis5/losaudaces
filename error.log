@@ -1,0 +1,15 @@
+[07-Apr-2025 21:41:15 America/Bogota] PHP Fatal error:  Uncaught Error: Class "Controller" not found in /Applications/MAMP/htdocs/losaudaces/controller/sorteocontroller.php:2
+Stack trace:
+#0 /Applications/MAMP/htdocs/losaudaces/index.php(38): require()
+#1 {main}
+  thrown in /Applications/MAMP/htdocs/losaudaces/controller/sorteocontroller.php on line 2
+[07-Apr-2025 21:42:09 America/Bogota] PHP Fatal error:  Uncaught Error: Class "Controller" not found in /Applications/MAMP/htdocs/losaudaces/controller/sorteocontroller.php:2
+Stack trace:
+#0 /Applications/MAMP/htdocs/losaudaces/index.php(38): require()
+#1 {main}
+  thrown in /Applications/MAMP/htdocs/losaudaces/controller/sorteocontroller.php on line 2
+[07-Apr-2025 21:44:50 America/Bogota] PHP Fatal error:  Uncaught Error: Class "Controller" not found in /Applications/MAMP/htdocs/losaudaces/controller/sorteocontroller.php:2
+Stack trace:
+#0 /Applications/MAMP/htdocs/losaudaces/index.php(38): require()
+#1 {main}
+  thrown in /Applications/MAMP/htdocs/losaudaces/controller/sorteocontroller.php on line 2

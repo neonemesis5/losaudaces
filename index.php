@@ -1,5 +1,5 @@
 <?php
-// Configuraciones de seguridad
+Configuraciones de seguridad
 header("X-Frame-Options: DENY");
 header("X-XSS-Protection: 1; mode=block");
 header("X-Content-Type-Options: nosniff");
@@ -14,7 +14,7 @@ session_start([
     'cookie_samesite' => 'Strict',
     'use_strict_mode' => true
 ]);
-
+// require './controller/sorteocontroller.php';
 // Protección contra session fixation
 session_regenerate_id(true);
 
