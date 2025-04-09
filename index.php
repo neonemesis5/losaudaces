@@ -1,5 +1,5 @@
 <?php
-Configuraciones de seguridad
+// Configuraciones de seguridad
 header("X-Frame-Options: DENY");
 header("X-XSS-Protection: 1; mode=block");
 header("X-Content-Type-Options: nosniff");
