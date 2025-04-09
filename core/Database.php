@@ -59,4 +59,11 @@ class Database {
     public function rollBack(): bool {
         return $this->connection->rollBack();
     }
+
+    /**
+     * Escapa caracteres especiales para búsquedas LIKE
+     */
+    public function escapeLikeString(string $str): string {
+        return str_replace(['\\', '%', '_'], ['\\\\', '\%', '\_'], $str);
+    }
 }

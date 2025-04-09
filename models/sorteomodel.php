@@ -26,7 +26,7 @@ class SorteoModel extends BaseModel {
      */
     public function getActive(): array {
         return $this->query(
-            "SELECT titulo, qtynumeros,fecha_sorteo FROM {$this->table} 
+            "SELECT titulo, qtynumeros, fecha_sorteo FROM {$this->table} 
              WHERE status = 'A' 
              ORDER BY fecha_sorteo ASC"
         );
@@ -101,9 +101,7 @@ class SorteoModel extends BaseModel {
     /**
      * Incrementa la cantidad de números vendidos
      */
-    public function incrementSold(int $id, int $quantity = 1)
-    {
-        //validar primero si el id del premio es valido para luego hacer el update
+    public function incrementSold(int $id, int $quantity = 1): bool {
         return $this->query(
             "UPDATE {$this->table} 
              SET qtyvendidos = qtyvendidos + :quantity 
@@ -112,7 +110,7 @@ class SorteoModel extends BaseModel {
                 ':quantity' => $quantity,
                 ':id' => $id
             ]
-        );
+        ) !== false;
     }
 
     /**
@@ -134,7 +132,7 @@ class SorteoModel extends BaseModel {
             "SELECT * FROM {$this->table} 
              WHERE titulo LIKE :search 
              ORDER BY fecha_sorteo DESC",
-            [':search' => "%{$searchTerm}%"]
+            [':search' => "%".$this->db->escapeLikeString($searchTerm)."%"]
         );
     }
 
@@ -148,7 +146,8 @@ class SorteoModel extends BaseModel {
              AND status = 'A'
              ORDER BY fecha_sorteo ASC 
              LIMIT :limit",
-            [':limit' => $limit]
+            [':limit' => $limit],
+            [':limit' => PDO::PARAM_INT]
         );
     }
 
