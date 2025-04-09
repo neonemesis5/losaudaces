@@ -26,7 +26,7 @@ class SorteoModel extends BaseModel {
      */
     public function getActive(): array {
         return $this->query(
-            "SELECT titulo, qtynumeros, fecha_sorteo FROM {$this->table} 
+            "SELECT id,titulo, FOTO,precio,qtynumeros, fecha_sorteo FROM {$this->table} 
              WHERE status = 'A' 
              ORDER BY fecha_sorteo ASC"
         );

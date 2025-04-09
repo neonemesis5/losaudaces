@@ -10,13 +10,19 @@ class PremiosModel extends BaseModel {  // Nombre de clase con mayúscula
         $this->table = 'premios';
     }
 
+    /**
+     * Obtiene los premios de un sorteo activo
+     * 
+     * @param int $idSorteo ID del sorteo
+     * @return array Premios del sorteo
+     */
     public function getPremiosSorteo($idSorteo): array {
         return $this->query(
             "SELECT `name`, `descripcion`, `posicion`, `valor`, `foto` 
              FROM {$this->table} 
-             WHERE sorteo_id = :sorteo_id AND status = 'A' 
+             WHERE sorteo_id = :sorteo_id AND `status` = :status 
              ORDER BY posicion ASC",
-            [':sorteo_id' => $idSorteo]  // Parámetro preparado
+            ['sorteo_id' => $idSorteo,'status' => 'A']  // Parámetro preparado
         );
     }
 

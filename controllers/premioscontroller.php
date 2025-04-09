@@ -12,7 +12,7 @@ class PremiosController extends BaseController {
 
     public function getPremiosSorteo($id): ?array {
         try {
-            return $this->model->find($id);
+            return $this->model->getPremiosSorteo($id);
         } catch (Exception $e) {
             $this->handleError($e);
             return null;

@@ -63,10 +63,10 @@ ini_set('error_log', __DIR__ . '/error.log');
 				</button>
 				<nav class="main-nav">
 					<ul>
-						<li><a href="#">Rifas</a></li>
-						<li><a href="#">Premios</a></li>
-						<li><a href="#">Contacto</a></li>
-						<li><a href="#">Login</a></li>
+						<li><a href="#" id="rifas">Rifas</a></li>
+						<li><a href="#" id="premios">Premios</a></li>
+						<li><a href="#" id="contact">Contacto</a></li>
+						<li><a href="#" id="login">Login</a></li>
 					</ul>
 				</nav>
 			</div>

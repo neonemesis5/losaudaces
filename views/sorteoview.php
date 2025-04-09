@@ -1,53 +1,24 @@
 <?php
 // var_dump(file_exists(__DIR__ . '/../controllers/sorteocontroller.php'));
 require __DIR__ . '/../controllers/sorteocontroller.php';
-require __DIR__ . '/../controllers/premioscontroller.php';
+// require __DIR__ . '/../controllers/premioscontroller.php';
 
 $sorteoController = new SorteoController();
 $sorteosActivos = $sorteoController->getActiveSorteos();
 
 // $premiosController = new PremiosController();
-var_dump($sorteosActivos);die;
-
-// $premios = $premiosController->getPremiosSorteo($sorteosActivos[]);
-
-
+// $premios = $premiosController->getPremiosSorteo($sorteosActivos['id']);
 ?>
 
 <section class="sorteos-container">
-    <div class="sorteos-header">
-        <h2>Próximos Sorteos</h2>
-        <p>Participa por increíbles premios</p>
+    <div class="sorteos">
+        <img src="resources/"<?php echo $sorteosActivos['FOTO']; ?> alt="Premios de Sorteo" class="sorteo-image">
     </div>
-
-    <div class="sorteos-grid">
-        <?php if (empty($sorteosActivos)): ?>
-            <div class="no-sorteos">
-                <p>Actualmente no hay sorteos disponibles. Vuelve pronto.</p>
-            </div>
-        <?php else: ?>
-            <?php foreach ($sorteosActivos as $sorteo): ?>
-                <div class="sorteo-card">
-                    <div class="sorteo-image">
-                        <img src="resources/premios/<?= htmlspecialchars($sorteo['imagen_premio'] ?? 'default.jpg') ?>" alt="<?= htmlspecialchars($sorteo['titulo']) ?>">
-                    </div>
-                    <div class="sorteo-info">
-                        <h3><?= htmlspecialchars($sorteo['titulo']) ?></h3>
-                        <p class="sorteo-fecha">
-                            <i class="icon-calendar"></i> 
-                            <?= date('d/m/Y', strtotime($sorteo['fecha_sorteo'])) ?>
-                            <?= !empty($sorteo['hora']) ? ' a las ' . htmlspecialchars($sorteo['hora']) : '' ?>
-                        </p>
-                        <p class="sorteo-numero">Sorteo #<?= htmlspecialchars($sorteo['nrosorteo']) ?></p>
-                        <div class="sorteo-progress">
-                            <div class="progress-bar" style="width: <?= min(100, ($sorteo['qtyvendidos'] / $sorteo['qtynumeros']) * 100) ?>%"></div>
-                            <span><?= htmlspecialchars($sorteo['qtyvendidos']) ?>/<?= htmlspecialchars($sorteo['qtynumeros']) ?> boletos</span>
-                        </div>
-                        <button class="btn-comprar" data-sorteo="<?= $sorteo['id'] ?>">Comprar Boleto</button>
-                    </div>
-                </div>
-            <?php endforeach; ?>
-        <?php endif; ?>
+    <div>
+        <?php echo $sorteosActivos['titulo']; ?>
+    </div>
+    <div>
+        <?php echo $sorteosActivos['precio']; ?>
     </div>
 </section>
 
