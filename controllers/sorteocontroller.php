@@ -1,8 +1,8 @@
 <?php
 
 use Core\BaseController;
-require __DIR__ . '/../models/sorteomodel.php';
-require __DIR__ . '/../core/basecontroller.php';
+require_once __DIR__ . '/../models/sorteomodel.php';
+require_once __DIR__ . '/../core/basecontroller.php';
 class SorteoController extends BaseController {
     protected $model;
 

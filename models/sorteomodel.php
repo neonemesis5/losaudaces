@@ -2,8 +2,8 @@
 
 use Core\BaseModel;
 
-require __DIR__ . '/../core/basemodel.php';
-require __DIR__ . '/../core/Database.php';
+require_once __DIR__ . '/../core/basemodel.php';
+require_once __DIR__ . '/../core/Database.php';
 
 class SorteoModel extends BaseModel {
 
@@ -26,7 +26,7 @@ class SorteoModel extends BaseModel {
      */
     public function getActive(): array {
         return $this->query(
-            "SELECT * FROM {$this->table} 
+            "SELECT titulo, qtynumeros,fecha_sorteo FROM {$this->table} 
              WHERE status = 'A' 
              ORDER BY fecha_sorteo ASC"
         );

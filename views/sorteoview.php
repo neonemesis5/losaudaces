@@ -1,8 +1,17 @@
 <?php
 // var_dump(file_exists(__DIR__ . '/../controllers/sorteocontroller.php'));
 require __DIR__ . '/../controllers/sorteocontroller.php';
+require __DIR__ . '/../controllers/premioscontroller.php';
+
 $sorteoController = new SorteoController();
-$sorteosActivos = $sorteoController->getActiveSorteos()
+$sorteosActivos = $sorteoController->getActiveSorteos();
+
+// $premiosController = new PremiosController();
+var_dump($sorteosActivos);die;
+
+// $premios = $premiosController->getPremiosSorteo($sorteosActivos[]);
+
+
 ?>
 
 <section class="sorteos-container">
