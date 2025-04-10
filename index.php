@@ -14,7 +14,13 @@ session_start([
 	'cookie_samesite' => 'Strict',
 	'use_strict_mode' => true
 ]);
-// require './controller/sorteocontroller.php';
+
+require __DIR__ . '/controllers/sorteocontroller.php';
+
+// Crear instancia del controlador
+$sorteoController = new SorteoController();
+$sorteosActivos = $sorteoController->getActiveSorteos();
+
 // Protección contra session fixation
 session_regenerate_id(true);
 
@@ -52,8 +58,8 @@ ini_set('error_log', __DIR__ . '/error.log');
 	<div class="page-wrapper">
 		<!-- Header -->
 		<header class="main-header">
-			<div class="logo-container" >
-				<a href="index.php"><img src="resources/logo.png" alt="Los Audaces" class="logo" ></a>
+			<div class="logo-container">
+				<a id="inicio" href="index.php"><img src="resources/logo.png" alt="Los Audaces" class="logo"></a>
 			</div>
 			<div class="menu-container">
 				<button class="menu-toggle">
@@ -74,31 +80,56 @@ ini_set('error_log', __DIR__ . '/error.log');
 
 		<!-- Contenido principal -->
 		<main class="main-content">
-			<div class="hero-section">
-				<div class="purple-bar"></div>
-				<div class="hero-text">
-					<h1>¡Cambia tu vida con un solo boleto! ¡Participa ya!</h1>
+			<div id="home-section" style="display: block;"> <!-- MOSTRAR POR DEFECTO -->
+				<div class="hero-section">
+					<div class="purple-bar"></div>
+					<div class="hero-text">
+						<h1>¡Cambia tu vida con un solo boleto! ¡Participa ya!</h1>
+					</div>
+					<img src="resources/image2.png" alt="Fondo de sorteos" class="background-image">
+					<div class="lottery-promo">
+						<div><strong>HOY PUEDE SER TU DÍA DE SUERTE</strong></div>
+						<div>Participa en nuestros fascinantes sorteos</div>
+						<div>¡La suerte está de tu lado!</div>
+						<button>Comprar Boleto</button>
+					</div>
 				</div>
-				<img src="resources/image2.png" alt="Fondo de sorteos" class="background-image">
-				<div class="lottery-promo">
-					<div><strong>HOY PUEDE SER TU DÍA DE SUERTE</strong></div>
-					<div>Participa en nuestros fascinantes sorteos</div>
-					<div>¡La suerte está de tu lado!</div>
-					<button>Comprar Boleto</button>
+
+				<!-- Slider de Premios -->
+				<section class="premios-section">
+					<h2 class="section-title">NUESTROS PREMIOS</h2>
+					<div class="slider-container">
+						<div class="slider">
+							<!-- Las imágenes se cargarán dinámicamente con JavaScript -->
+						</div>
+						<button class="slider-btn prev-btn">&lt;</button>
+						<button class="slider-btn next-btn">&gt;</button>
+						<div class="slider-dots"></div>
+					</div>
+				</section>
+			</div>
+
+			<div id="rifas-section" style="display: none; "> <!-- OCULTA POR DEFECTO -->
+				<section class="sorteos-container" >
+					<div class="sorteos">
+						<img src="resources/premios/<?php echo htmlspecialchars($sorteosActivos['FOTO'] ?? 'default.jpg'); ?>" alt="Premios de Sorteo" class="sorteo-image">
+					</div>
+					<div class="sorteo-info" >
+						<h2><?php echo htmlspecialchars($sorteosActivos['titulo'] ?? 'Sorteo'); ?></h2>
+						<p class="sorteo-precio">$<?php echo number_format($sorteosActivos['precio'] ?? 0, 2); ?></p>
+						<button class="btn-comprar" data-sorteo="<?php echo htmlspecialchars($sorteosActivos['id'] ?? ''); ?>">Comprar Boleto</button>
+					</div>
+				</section>
+
+				<!-- Modal para compra -->
+				<div id="compraModal" class="modal">
+					<div class="modal-content">
+						<span class="close-modal">&times;</span>
+						<h3 id="modalSorteoTitulo"></h3>
+						<div id="modalSorteoContent"></div>
+					</div>
 				</div>
 			</div>
-			<!-- Slider de Premios -->
-			<section class="premios-section">
-				<h2 class="section-title">NUESTROS PREMIOS</h2>
-				<div class="slider-container">
-					<div class="slider">
-						<!-- Las imágenes se cargarán dinámicamente con JavaScript -->
-					</div>
-					<button class="slider-btn prev-btn">&lt;</button>
-					<button class="slider-btn next-btn">&gt;</button>
-					<div class="slider-dots"></div>
-				</div>
-			</section>
 
 		</main>
 
@@ -258,51 +289,27 @@ ini_set('error_log', __DIR__ . '/error.log');
 			// Cargar imágenes iniciales
 			loadImages();
 
-			// Cargar contenido dinámico
-			document.getElementById('rifas').addEventListener('click', function(e) {
+
+			// Cambiar entre secciones
+			document.querySelector('#rifas').addEventListener('click', function(e) {
 				e.preventDefault();
 
-				// Obtener el contenedor principal
-				const mainContent = document.querySelector('.main-content');
-
-				// Mostrar indicador de carga
-				mainContent.innerHTML = '<div class="loading">Cargando...</div>';
-
-				// Fetch para obtener el contenido de sorteoview.php
-				fetch('views/sorteoview.php')
-					.then(response => {
-						if (!response.ok) {
-							throw new Error('Network response was not ok');
-						}
-						return response.text();
-					})
-					.then(html => {
-						// Crear un elemento temporal para parsear el HTML
-						const temp = document.createElement('div');
-						temp.innerHTML = html;
-
-						// Extraer solo el contenido que necesitamos
-						const sorteosContainer = temp.querySelector('.sorteos-container');
-						const modal = temp.querySelector('#compraModal');
-
-						// Reemplazar el contenido principal
-						mainContent.innerHTML = '';
-						mainContent.appendChild(sorteosContainer);
-						document.body.appendChild(modal);
-
-						// Ejecutar el script de la vista
-						const scripts = temp.querySelectorAll('script');
-						scripts.forEach(script => {
-							const newScript = document.createElement('script');
-							newScript.textContent = script.textContent;
-							document.body.appendChild(newScript);
-						});
-					})
-					.catch(error => {
-						console.error('Error al cargar la vista:', error);
-						mainContent.innerHTML = '<div class="error">Error al cargar el contenido</div>';
-					});
+				document.getElementById('home-section').style.display = 'none';
+				document.getElementById('rifas-section').style.display = 'block';
+				window.scrollTo(0, 0); // Opcional: volver arriba
 			});
+
+			// Si tienes un botón o link con ID "inicio", puedes hacer esto:
+			document.querySelector('#inicio')?.addEventListener('click', function(e) {
+				e.preventDefault();
+
+				document.getElementById('home-section').style.display = 'block';
+				document.getElementById('rifas-section').style.display = 'none';
+				window.scrollTo(0, 0);
+			});
+
+
+
 		});
 	</script>
 </body>
