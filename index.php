@@ -8,11 +8,11 @@ header("Content-Security-Policy: default-src 'self' https: 'unsafe-inline' 'unsa
 
 // Configuración de sesión segura
 session_start([
-    'cookie_lifetime' => 86400,
-    'cookie_secure' => true,
-    'cookie_httponly' => true,
-    'cookie_samesite' => 'Strict',
-    'use_strict_mode' => true
+	'cookie_lifetime' => 86400,
+	'cookie_secure' => true,
+	'cookie_httponly' => true,
+	'cookie_samesite' => 'Strict',
+	'use_strict_mode' => true
 ]);
 // require './controller/sorteocontroller.php';
 // Protección contra session fixation
@@ -23,11 +23,11 @@ date_default_timezone_set('America/Bogota');
 
 // Protección básica contra inyecciones
 if (isset($_SERVER['QUERY_STRING'])) {
-    $queryString = $_SERVER['QUERY_STRING'];
-    if (preg_match('/[^a-zA-Z0-9_-]/', $queryString)) {
-        header("HTTP/1.1 400 Bad Request");
-        exit('Solicitud inválida');
-    }
+	$queryString = $_SERVER['QUERY_STRING'];
+	if (preg_match('/[^a-zA-Z0-9_-]/', $queryString)) {
+		header("HTTP/1.1 400 Bad Request");
+		exit('Solicitud inválida');
+	}
 }
 
 // Configuración de manejo de errores
@@ -52,8 +52,8 @@ ini_set('error_log', __DIR__ . '/error.log');
 	<div class="page-wrapper">
 		<!-- Header -->
 		<header class="main-header">
-			<div class="logo-container">
-				<img src="resources/logo.png" alt="Los Audaces" class="logo">
+			<div class="logo-container" >
+				<a href="index.php"><img src="resources/logo.png" alt="Los Audaces" class="logo" ></a>
 			</div>
 			<div class="menu-container">
 				<button class="menu-toggle">
@@ -257,6 +257,52 @@ ini_set('error_log', __DIR__ . '/error.log');
 
 			// Cargar imágenes iniciales
 			loadImages();
+
+			// Cargar contenido dinámico
+			document.getElementById('rifas').addEventListener('click', function(e) {
+				e.preventDefault();
+
+				// Obtener el contenedor principal
+				const mainContent = document.querySelector('.main-content');
+
+				// Mostrar indicador de carga
+				mainContent.innerHTML = '<div class="loading">Cargando...</div>';
+
+				// Fetch para obtener el contenido de sorteoview.php
+				fetch('views/sorteoview.php')
+					.then(response => {
+						if (!response.ok) {
+							throw new Error('Network response was not ok');
+						}
+						return response.text();
+					})
+					.then(html => {
+						// Crear un elemento temporal para parsear el HTML
+						const temp = document.createElement('div');
+						temp.innerHTML = html;
+
+						// Extraer solo el contenido que necesitamos
+						const sorteosContainer = temp.querySelector('.sorteos-container');
+						const modal = temp.querySelector('#compraModal');
+
+						// Reemplazar el contenido principal
+						mainContent.innerHTML = '';
+						mainContent.appendChild(sorteosContainer);
+						document.body.appendChild(modal);
+
+						// Ejecutar el script de la vista
+						const scripts = temp.querySelectorAll('script');
+						scripts.forEach(script => {
+							const newScript = document.createElement('script');
+							newScript.textContent = script.textContent;
+							document.body.appendChild(newScript);
+						});
+					})
+					.catch(error => {
+						console.error('Error al cargar la vista:', error);
+						mainContent.innerHTML = '<div class="error">Error al cargar el contenido</div>';
+					});
+			});
 		});
 	</script>
 </body>

@@ -629,3 +629,76 @@ h2.section-title {
         transform: translateY(-10px) rotate(-45deg);
     }
 }
+
+/* Estilos para la sección de sorteos */
+.sorteos-section {
+    width: 100%;
+    padding: 2rem 0;
+    text-align: center;
+}
+
+.sorteos-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 2rem;
+    padding: 1rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.sorteo-card {
+    width: 300px;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.sorteo-card:hover {
+    transform: translateY(-5px);
+}
+
+.sorteo-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.sorteo-info {
+    padding: 1.5rem;
+}
+
+.sorteo-info h3 {
+    margin: 0 0 0.5rem 0;
+    color: #333;
+}
+
+.sorteo-precio {
+    font-size: 1.5rem;
+    color: #6a1b9a;
+    font-weight: bold;
+    margin: 0 0 1rem 0;
+}
+
+.btn-comprar {
+    background-color: #6a1b9a;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.btn-comprar:hover {
+    background-color: #4a148c;
+}
+
+/* Estilos del modal (mantén los que ya tienes) */
+.modal {
+    /* ... tus estilos existentes ... */
+}
