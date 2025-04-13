@@ -130,23 +130,38 @@ ini_set('error_log', __DIR__ . '/error.log');
 					<div class="sorteo-info">
 						<h2><?php echo htmlspecialchars($sorteosActivos['titulo'] ?? 'Sorteo'); ?></h2>
 						<p class="sorteo-precio">$<?php echo number_format($sorteosActivos['precio'] ?? 0, 2); ?></p>
-						<button class="btn-comprar" data-sorteo="<?php echo htmlspecialchars($sorteosActivos['id'] ?? ''); ?>">Comprar Boleto</button>
+						<button id="comprar_num" class="btn-comprar" data-sorteo="<?php echo htmlspecialchars($sorteosActivos['id'] ?? ''); ?>">Comprar Boleto</button>
 					</div>
 				</section>
 			</div>
 
-			<div class="carton-numeros" style="display: none; "><!-- OCULTA POR DEFECTO -->
-				<?php
-				if ($sorteosActivos['qtynumeros'] / 100 > 1) //solo imprime los rangos de numeros para que tenga 
-					for ($i = 0; $i < 9; $i++)  //cant  
-						echo '<a href="#"><div class="carton-numero">' . str_pad(($i + 1), 3, '000', STR_PAD_RIGHT) . '</div></a>';
-
-				$num = 0;
-				for ($p = 0; $p < $sorteosActivos['qtynumeros'] / 100; $p++)  //para paginar  cada carton por seccion y debe cambiar segun el evento del rango seleccionado
-					for ($i = 0; $i < 10; $i++)  //para imprimir las filas
-						for ($j = 0; $j < 10; $j++)  //para impprimir las columnas
-							echo '<a href="#"><div class="carton-numero">' . str_pad($num, 2, '000', STR_PAD_LEFT) . '<br>' . $num . '</div></a>';
-				?>
+			<div id="carton-num" class="carton-numeros" style="display: none;">
+				<div class="rango-num">
+					<?php
+					if ($sorteosActivos['qtynumeros'] / 100 > 1) {
+						for ($i = 0; $i < 9; $i++) {
+							echo '<a href="#"><div class="numero">' . str_pad(($i + 1), 3, '000', STR_PAD_RIGHT) . '</div></a>';
+						}
+					}
+					?>
+				</div>
+				<div class="numeros-container">
+					<table class="numeros-tabla">
+						<?php
+						$num = 0;
+						for ($p = 0; $p < $sorteosActivos['qtynumeros'] / 100; $p++) {
+							for ($i = 0; $i < 10; $i++) {
+								echo '<tr>';
+								for ($j = 0; $j < 10; $j++) {
+									echo '<td><a href="#"><div class="carton-numero">' . str_pad($num, 2, '0', STR_PAD_LEFT) . '</div></a></td>';
+									$num++;
+								}
+								echo '</tr>';
+							}
+						}
+						?>
+					</table>
+				</div>
 			</div>
 
 
@@ -378,7 +393,14 @@ ini_set('error_log', __DIR__ . '/error.log');
 				document.getElementById('rifas-section').style.display = 'none';
 				window.scrollTo(0, 0);
 			});
+			document.querySelector('#comprar_num').addEventListener('click', function(e) {
+				e.preventDefault();
 
+
+				document.getElementById('rifas-section').style.display = 'none';
+				document.getElementById('carton-num').style.display = 'flex';
+				window.scrollTo(0, 0); // Opcional: volver arriba
+			});
 
 
 		});

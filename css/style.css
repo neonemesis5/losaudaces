@@ -520,15 +520,86 @@ section.sorteos-container .btn-comprar:hover {
 	/* margin-left: -10px; */
 /* } */ 
 
-
+.carton-numeros{
+	margin-top: 200px;
+	display: none;
+	align-content: center;
+    text-align: center;
+}
 
 /* Estilos para la sección de cartón de números */
-.carton-numeros {
-    padding: 20px;
+.numero {
+    /* padding: 20px;
     background-color: #f8f9fa;
     border-radius: 8px;
-    margin: 20px 0;
+    margin: 20px 0; */
+	
+	height: 40px;
+    width: 40px;
+    background-color: blue;
+	
 }
+
+/* Estilos para centrar el cartón */
+.carton-numeros {
+    margin: 20px auto;
+    width: fit-content;
+    max-width: 100%;
+    text-align: center;
+    padding: 20px;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+	margin-top: 200px;
+	background-image: url('../resources/fondocarton.jpg');
+	/* background-size: cover; */
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.rango-num {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.numeros-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.numeros-tabla {
+    border-collapse: collapse;
+    margin: 0 auto;
+}
+
+.numeros-tabla td {
+    padding: 8px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+.numero, .carton-numero {
+    height: 40px;
+    width: 40px;
+    background-color: blue;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.numero:hover, .carton-numero:hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+
 
 .carton-controls {
     margin-bottom: 20px;
