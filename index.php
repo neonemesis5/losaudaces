@@ -16,11 +16,23 @@ session_start([
 ]);
 
 require __DIR__ . '/controllers/sorteocontroller.php';
+require __DIR__ . '/controllers/locationcontroller.php';
+require __DIR__ . '/controllers/cartoncontroller.php';
+
 
 // Crear instancia del controlador
 $sorteoController = new SorteoController();
 $sorteosActivos = $sorteoController->getActiveSorteos();
+// $_REQUEST['qtyTotal'] = $sorteosActivos['qtynumeros'] ?? 1;
+// $_REQUEST['qtyRows'] = $sorteosActivos['qtynumeros'] / 100 ?? 1;
+// $_REQUEST['qtyPages'] = $_REQUEST['qtynumeros'] / 100;
 
+$countryController = new LocationController();
+$countries = $countryController->getAllCountries();
+
+
+$ticketsController = new CartonController();
+$tickets = $ticketsController->getCartonSellBySorteo($sorteosActivos['id']);
 // Protección contra session fixation
 session_regenerate_id(true);
 
@@ -82,11 +94,12 @@ ini_set('error_log', __DIR__ . '/error.log');
 		<main class="main-content">
 			<div id="home-section" style="display: block;"> <!-- MOSTRAR POR DEFECTO -->
 				<div class="hero-section">
-					<div class="purple-bar"></div>
-					<div class="hero-text">
-						<h1>¡Cambia tu vida con un solo boleto! ¡Participa ya!</h1>
+					<div class="hero-background">
+						<div class="purple-bar"></div>
+						<div class="hero-text">
+							<h1>¡Cambia tu vida con un solo boleto! ¡Participa ya!</h1>
+						</div>
 					</div>
-					<img src="resources/image2.png" alt="Fondo de sorteos" class="background-image">
 					<div class="lottery-promo">
 						<div><strong>HOY PUEDE SER TU DÍA DE SUERTE</strong></div>
 						<div>Participa en nuestros fascinantes sorteos</div>
@@ -110,27 +123,85 @@ ini_set('error_log', __DIR__ . '/error.log');
 			</div>
 
 			<div id="rifas-section" style="display: none; "> <!-- OCULTA POR DEFECTO -->
-				<section class="sorteos-container" >
+				<section class="sorteos-container">
 					<div class="sorteos">
 						<img src="resources/premios/<?php echo htmlspecialchars($sorteosActivos['FOTO'] ?? 'default.jpg'); ?>" alt="Premios de Sorteo" class="sorteo-image">
 					</div>
-					<div class="sorteo-info" >
+					<div class="sorteo-info">
 						<h2><?php echo htmlspecialchars($sorteosActivos['titulo'] ?? 'Sorteo'); ?></h2>
 						<p class="sorteo-precio">$<?php echo number_format($sorteosActivos['precio'] ?? 0, 2); ?></p>
 						<button class="btn-comprar" data-sorteo="<?php echo htmlspecialchars($sorteosActivos['id'] ?? ''); ?>">Comprar Boleto</button>
 					</div>
 				</section>
-
-				<!-- Modal para compra -->
-				<div id="compraModal" class="modal">
-					<div class="modal-content">
-						<span class="close-modal">&times;</span>
-						<h3 id="modalSorteoTitulo"></h3>
-						<div id="modalSorteoContent"></div>
-					</div>
-				</div>
 			</div>
 
+			<div class="carton-numeros" style="display: none; "><!-- OCULTA POR DEFECTO -->
+				<?php
+				if ($sorteosActivos['qtynumeros'] / 100 > 1) //solo imprime los rangos de numeros para que tenga 
+					for ($i = 0; $i < 9; $i++)  //cant  
+						echo '<a href="#"><div class="carton-numero">' . str_pad(($i + 1), 3, '000', STR_PAD_RIGHT) . '</div></a>';
+
+				$num = 0;
+				for ($p = 0; $p < $sorteosActivos['qtynumeros'] / 100; $p++)  //para paginar  cada carton por seccion y debe cambiar segun el evento del rango seleccionado
+					for ($i = 0; $i < 10; $i++)  //para imprimir las filas
+						for ($j = 0; $j < 10; $j++)  //para impprimir las columnas
+							echo '<a href="#"><div class="carton-numero">' . str_pad($num, 2, '000', STR_PAD_LEFT) . '<br>' . $num . '</div></a>';
+				?>
+			</div>
+
+
+			<div> <!-- OCULTA POR DEFECTO formulario de registro de usuario para compra -->
+				<form id="registroForm" method="post" action="" style="display: none; ">
+					<h1>Registrate</h1>
+
+					<div class="form-group">
+						<label for="nombre_apellido">Nombre y Apellido:</label>
+						<input type="text" id="nombre_apellido" name="nombre_apellido" placeholder="Ingrese su nombre completo" required value="Ana Reimy">
+					</div>
+
+					<div class="form-group">
+						<label for="telefono">Teléfono:</label>
+						<input type="tel" id="telefono" name="telefono" placeholder="Ingrese su número de teléfono" required value="04241234567">
+					</div>
+
+					<div class="form-group">
+						<label for="correo">Correo Electrónico:</label>
+						<input type="email" id="correo" name="correo" placeholder="Ingrese su correo electrónico" required value="usuario@ejemplo.com">
+					</div>
+
+					<div class="form-group">
+						<label for="ubicacion">Ubicación:</label>
+						<select id="ubicacion" name="ubicacion" required>
+							<option value="">Seleccione su país</option>
+							<?php foreach ($countries as $code => $name): ?>
+								<option value="<?php echo $code; ?>" <?php echo ($name == 'Venezuela') ? 'selected' : ''; ?>>
+									<?php echo $name; ?>
+								</option>
+							<?php endforeach; ?>
+						</select>
+					</div>
+
+					<div class="form-group">
+						<label for="identificacion">Número de Identificación:</label>
+						<input type="text" id="identificacion" name="identificacion" placeholder="Ingrese su número de identificación" required value="V12345678">
+					</div>
+
+					<div class="form-group checkbox-group">
+						<input type="checkbox" id="condiciones" name="condiciones" required>
+						<label for="condiciones">He leído las condiciones y acepto las mismas.</label>
+					</div>
+
+					<button type="submit" class="submit-btn">ENVIAR</button>
+				</form>
+			</div>
+			<!-- Modal para compra -->
+			<div id="compraModal" class="modal">
+				<div class="modal-content">
+					<span class="close-modal">&times;</span>
+					<h3 id="modalSorteoTitulo"></h3>
+					<div id="modalSorteoContent"></div>
+				</div>
+			</div>
 		</main>
 
 		<!-- Footer -->
