@@ -552,7 +552,7 @@ section.sorteos-container .btn-comprar:hover {
     align-items: center;
 	margin-top: 200px;
 	background-image: url('../resources/fondocarton.jpg');
-	/* background-size: cover; */
+	background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
 }
@@ -564,7 +564,12 @@ section.sorteos-container .btn-comprar:hover {
     gap: 10px;
     margin-bottom: 20px;
 }
-
+.numrango{
+	color: gold;
+}
+.numrango:hover{
+	color: rgb(6, 57, 23);
+}
 .numeros-container {
     width: 100%;
     overflow-x: auto;
@@ -584,7 +589,7 @@ section.sorteos-container .btn-comprar:hover {
 .numero, .carton-numero {
     height: 40px;
     width: 40px;
-    background-color: blue;
+    background-color: #02250c;
     color: white;
     display: flex;
     align-items: center;
@@ -596,7 +601,8 @@ section.sorteos-container .btn-comprar:hover {
 
 .numero:hover, .carton-numero:hover {
     transform: scale(1.05);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 5px rgba(13, 218, 20, 0.2);
+	background-color: #45a049;
 }
 
 
@@ -639,20 +645,21 @@ section.sorteos-container .btn-comprar:hover {
     flex-wrap: wrap;
     gap: 8px;
     overflow-x: auto;
-    padding-bottom: 10px;
+    padding-bottom: 6px;
 }
 
 .rango-btn {
-    padding: 6px 12px;
+    padding: 6px 2px;
     background-color: #e9ecef;
     border: 1px solid #dee2e6;
     border-radius: 4px;
     cursor: pointer;
     white-space: nowrap;
+	background-color: green;
 }
 
 .rango-btn:hover {
-    background-color: #dee2e6;
+    background-color: #dee6e3;
 }
 
 .carton-container {

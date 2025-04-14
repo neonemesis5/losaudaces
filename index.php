@@ -138,32 +138,21 @@ ini_set('error_log', __DIR__ . '/error.log');
 			<div id="carton-num" class="carton-numeros" style="display: none;">
 				<div class="rango-num">
 					<?php
-					if ($sorteosActivos['qtynumeros'] / 100 > 1) {
-						for ($i = 0; $i < 9; $i++) {
-							echo '<a href="#"><div class="numero">' . str_pad(($i + 1), 3, '000', STR_PAD_RIGHT) . '</div></a>';
+					$totalPages = ceil($sorteosActivos['qtynumeros'] / 100);
+					if ($totalPages > 1) {
+						for ($i = 0; $i < $totalPages; $i++) {
+							$startNum = $i * 100;
+							$endNum = ($i + 1) * 100 - 1;
+							echo '<a href="#" class="rango-btn" data-page="' . $i . '" data-start="' . $startNum . '" data-end="' . $endNum . '">';
+							echo '<div class="numrango">'.str_pad($startNum, 3, '0', STR_PAD_LEFT) . ' - ' . str_pad($endNum, 3, '0', STR_PAD_LEFT).'</div>';
+							echo '</a>';
 						}
 					}
 					?>
 				</div>
-				<div class="numeros-container">
-					<table class="numeros-tabla">
-						<?php
-						$num = 0;
-						for ($p = 0; $p < $sorteosActivos['qtynumeros'] / 100; $p++) {
-							for ($i = 0; $i < 10; $i++) {
-								echo '<tr>';
-								for ($j = 0; $j < 10; $j++) {
-									echo '<td><a href="#"><div class="carton-numero">' . str_pad($num, 2, '0', STR_PAD_LEFT) . '</div></a></td>';
-									$num++;
-								}
-								echo '</tr>';
-							}
-						}
-						?>
-					</table>
-				</div>
+				<!-- Esta tabla será llenada dinámicamente por JavaScript -->
+				<table class="numeros-tabla"></table>
 			</div>
-
 
 			<div> <!-- OCULTA POR DEFECTO formulario de registro de usuario para compra -->
 				<form id="registroForm" method="post" action="" style="display: none; ">
@@ -402,7 +391,47 @@ ini_set('error_log', __DIR__ . '/error.log');
 				window.scrollTo(0, 0); // Opcional: volver arriba
 			});
 
+			// Valor total de números disponibles, esto deberías pasarlo desde PHP si es dinámico
+			const totalNumeros = <?php echo intval($sorteosActivos['qtynumeros']); ?>;
 
+			function generarTablaNumeros(start, end) {
+				const tabla = document.querySelector('.numeros-tabla');
+				tabla.innerHTML = ''; // Limpiamos la tabla actual
+
+				let num = start;
+				for (let i = 0; i < 10; i++) {
+					const row = document.createElement('tr');
+					for (let j = 0; j < 10; j++) {
+						if (num <= end && num < totalNumeros) {
+							const cell = document.createElement('td');
+							const link = document.createElement('a');
+							link.href = '#';
+							const div = document.createElement('div');
+							div.className = 'carton-numero';
+							div.textContent = String(num).padStart(3, '0');
+							link.appendChild(div);
+							cell.appendChild(link);
+							row.appendChild(cell);
+							num++;
+						}
+					}
+					tabla.appendChild(row);
+				}
+			}
+
+			// Activamos el comportamiento en todos los botones de rango
+			document.querySelectorAll('.rango-btn').forEach(btn => {
+				btn.addEventListener('click', function(e) {
+					e.preventDefault();
+
+					const start = parseInt(this.getAttribute('data-start'));
+					const end = parseInt(this.getAttribute('data-end'));
+					generarTablaNumeros(start, end);
+				});
+			});
+
+			// Llenamos la tabla inicialmente con los primeros 100 números
+			generarTablaNumeros(0, 99);
 		});
 	</script>
 </body>
