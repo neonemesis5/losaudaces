@@ -4,7 +4,8 @@ header("X-Frame-Options: DENY");
 header("X-XSS-Protection: 1; mode=block");
 header("X-Content-Type-Options: nosniff");
 header("Referrer-Policy: strict-origin-when-cross-origin");
-header("Content-Security-Policy: default-src 'self' https: 'unsafe-inline' 'unsafe-eval'; img-src 'self' data:;");
+// header("Content-Security-Policy: default-src 'self' https: 'unsafe-inline' 'unsafe-eval'; img-src 'self' data:;");
+// header("Content-Security-Policy: default-src 'self' https: 'unsafe-inline' 'unsafe-eval'; img-src 'self' data:; script-src 'self' https://maps.googleapis.com https://maps.gstatic.com; frame-src https://www.google.com;");
 
 // Configuración de sesión segura
 session_start([
@@ -65,6 +66,7 @@ ini_set('error_log', __DIR__ . '/error.log');
 	<link href="css/style.css" rel="stylesheet">
 	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 	<link rel="icon" href="resources/logo.png" type="image/png">
+
 </head>
 
 <body>
@@ -105,7 +107,7 @@ ini_set('error_log', __DIR__ . '/error.log');
 						<div><strong>HOY PUEDE SER TU DÍA DE SUERTE</strong></div>
 						<div>Participa en nuestros fascinantes sorteos</div>
 						<div>¡La suerte está de tu lado!</div>
-						<button>Comprar Boleto</button>
+						<button id="comprar_numprin" class="btn_comprarprin">Comprar Boleto</button>
 					</div>
 				</div>
 
@@ -145,7 +147,7 @@ ini_set('error_log', __DIR__ . '/error.log');
 							$startNum = $i * 100;
 							$endNum = ($i + 1) * 100 - 1;
 							echo '<a href="#" class="rango-btn" data-page="' . $i . '" data-start="' . $startNum . '" data-end="' . $endNum . '">';
-							echo '<div class="numrango">'.str_pad($startNum, 3, '0', STR_PAD_LEFT) . ' - ' . str_pad($endNum, 3, '0', STR_PAD_LEFT).'</div>';
+							echo '<div class="numrango">' . str_pad($startNum, 3, '0', STR_PAD_LEFT) . ' - ' . str_pad($endNum, 3, '0', STR_PAD_LEFT) . '</div>';
 							echo '</a>';
 						}
 					}
@@ -199,6 +201,38 @@ ini_set('error_log', __DIR__ . '/error.log');
 					<button type="submit" class="submit-btn">ENVIAR</button>
 				</form>
 			</div>
+
+			<section id="contacto-section" style="display: none;">
+				<!-- MAPA DE GOOGLE -->
+				<div id="mapa" style="width: 100%; height: 300px; margin-top: 20px;"></div>
+
+				<form id="formContacto" method="POST" action="sendMail.php">
+					<h2>Contáctanos</h2>
+
+					<div class="form-group">
+						<label for="nombre">Nombre:</label>
+						<input type="text" id="nombre" name="nombre" required>
+					</div>
+
+					<div class="form-group">
+						<label for="email">Correo Electrónico:</label>
+						<input type="email" id="email" name="email" required>
+					</div>
+
+					<div class="form-group">
+						<label for="mensaje">Mensaje:</label>
+						<textarea id="mensaje" name="mensaje" rows="5" required></textarea>
+					</div>
+
+					<!-- RECAPTCHA -->
+					<div class="g-recaptcha" data-sitekey="TU_SITE_KEY_RECAPTCHA"></div>
+
+					<button type="submit">Enviar</button>
+				</form>
+
+
+			</section>
+
 			<!-- Modal para compra -->
 			<div id="compraModal" class="modal">
 				<div class="modal-content">
@@ -255,6 +289,31 @@ ini_set('error_log', __DIR__ . '/error.log');
 	</div>
 
 	<script>
+		function initMap() {
+			const ubicacion = {
+				lat: 7.8891,
+				lng: -72.5078
+			}; // Coordenadas de ejemplo (Cúcuta)
+			const map = new google.maps.Map(document.getElementById("mapa"), {
+				zoom: 16,
+				center: ubicacion,
+			});
+			new google.maps.Marker({
+				position: ubicacion,
+				map: map,
+				title: "Los Audaces",
+			});
+		}
+
+		function loadGoogleMaps() {
+			const script = document.createElement('script');
+			script.src = 'https://maps.googleapis.com/maps/api/js?key=TU_API_KEY_MAPS&callback=initMap';
+			script.async = true;
+			script.defer = true;
+			document.body.appendChild(script);
+		}
+
+
 		document.addEventListener('DOMContentLoaded', function() {
 			const slider = document.querySelector('.slider');
 			const dotsContainer = document.querySelector('.slider-dots');
@@ -372,6 +431,8 @@ ini_set('error_log', __DIR__ . '/error.log');
 
 				document.getElementById('home-section').style.display = 'none';
 				document.getElementById('rifas-section').style.display = 'block';
+				document.getElementById('carton-num').style.display = 'none';
+				document.getElementById('contacto-section').style.display = 'none';
 				window.scrollTo(0, 0); // Opcional: volver arriba
 			});
 
@@ -391,6 +452,15 @@ ini_set('error_log', __DIR__ . '/error.log');
 				document.getElementById('carton-num').style.display = 'flex';
 				window.scrollTo(0, 0); // Opcional: volver arriba
 			});
+			//comprar_numprin
+			document.querySelector('#comprar_numprin').addEventListener('click', function(e) {
+				e.preventDefault();
+
+				document.getElementById('home-section').style.display = 'none';
+				document.getElementById('contacto-section').style.display = 'none';
+				document.getElementById('carton-num').style.display = 'flex';
+				window.scrollTo(0, 0); // Opcional: volver arriba
+			});
 
 			// Valor total de números disponibles, esto deberías pasarlo desde PHP si es dinámico
 			const totalNumeros = <?php echo intval($sorteosActivos['qtynumeros']); ?>;
@@ -399,9 +469,9 @@ ini_set('error_log', __DIR__ . '/error.log');
 				const tabla = document.querySelector('.numeros-tabla');
 				tabla.innerHTML = ''; // Limpiamos la tabla actual
 				// Convertir los números vendidos a formato 3 dígitos (001, 015, etc.)
-				const numerosVendidos = <?php echo json_encode(array_map(function($t) { 
-					return str_pad($t['numero'], 3, '0', STR_PAD_LEFT); 
-				}, $tickets)); ?>;
+				const numerosVendidos = <?php echo json_encode(array_map(function ($t) {
+											return str_pad($t['numero'], 3, '0', STR_PAD_LEFT);
+										}, $tickets)); ?>;
 				let num = start;
 				for (let i = 0; i < 10; i++) {
 					const row = document.createElement('tr');
@@ -409,14 +479,14 @@ ini_set('error_log', __DIR__ . '/error.log');
 						if (num <= end && num < totalNumeros) {
 							const numeroFormateado = String(num).padStart(3, '0');
 							const estaVendido = numerosVendidos.includes(numeroFormateado);
-							
+
 							const cell = document.createElement('td');
 							const link = document.createElement('a');
-							link.href = estaVendido ? 'javascript:void(0)' : '#';// link.href = '#';
+							link.href = estaVendido ? 'javascript:void(0)' : '#'; // link.href = '#';
 							const div = document.createElement('div');
 							div.className = 'carton-numero ' + (estaVendido ? 'vendido' : 'disponible');
 							div.textContent = numeroFormateado;
-							
+
 							if (estaVendido) {
 								div.title = 'Número ya vendido';
 							} else {
@@ -448,8 +518,39 @@ ini_set('error_log', __DIR__ . '/error.log');
 
 			// Llenamos la tabla inicialmente con los primeros 100 números
 			generarTablaNumeros(0, 99);
+
+			// document.querySelector('#contact').addEventListener('click', function(e) {
+			// 	e.preventDefault();
+			// 	document.getElementById('home-section').style.display = 'none';
+			// 	document.getElementById('rifas-section').style.display = 'none';
+			// 	document.getElementById('carton-num').style.display = 'none';
+			// 	document.getElementById('contacto-section').style.display = 'flex';
+			// 	window.scrollTo(0, 0);
+			// });
+
+
+			document.querySelector('#contact').addEventListener('click', function(e) {
+				e.preventDefault();
+				document.getElementById('home-section').style.display = 'none';
+				document.getElementById('rifas-section').style.display = 'none';
+				document.getElementById('carton-num').style.display = 'none';
+				document.getElementById('contacto-section').style.display = 'flex';
+				window.scrollTo(0, 0);
+
+				// Cargar el mapa solo cuando sea necesario
+				if (typeof google === 'undefined') {
+					loadGoogleMaps();
+				} else if (typeof initMap === 'function') {
+					initMap();
+				}
+			});
+
+
+
+
 		});
 	</script>
+	<script async defer src="https://maps.googleapis.com/maps/api/js?key=TU_API_KEY_MAPS&callback=initMap"></script>
 </body>
 
 </html>

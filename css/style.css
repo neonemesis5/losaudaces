@@ -862,8 +862,81 @@ section.sorteos-container .btn-comprar:hover {
 	}
 }
 
-/* @media (max-width: 480px) {
-	.logo {
-		max-width: 140px;
-	}
-} */
+#contacto-section {
+    display: flex; /* Activa el modelo flexbox */
+    flex-direction: row; /* Alinea los elementos en horizontal */
+    gap: 20px; /* Espacio entre los elementos */
+    padding: 10px;
+    max-width: 1200px; /* Ancho máximo del contenedor */
+    margin: 0 auto; /* Centrar el contenedor */
+	margin-top:200px;
+}
+
+#mapa {
+    flex: 1; /* Ocupa 1 parte del espacio disponible */
+    min-width: 300px; /* Ancho mínimo del mapa */
+    height: 400px; /* Altura fija */
+    border-radius: 8px; /* Bordes redondeados */
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1); /* Sombra suave */
+}
+
+#formContacto {
+    flex: 1; /* Ocupa 1 parte del espacio disponible */
+    min-width: 300px; /* Ancho mínimo del formulario */
+    padding: 20px;
+    background: gold;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+/* Estilos adicionales para el formulario */
+#formContacto h2 {
+    margin-top: 0;
+    color: #333;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+	color:green;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+button[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 100%;
+}
+
+button[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+/* Responsive: cuando la pantalla es pequeña, apilar verticalmente */
+@media (max-width: 768px) {
+    #contacto-section {
+        flex-direction: column;
+    }
+    
+    #mapa, #formContacto {
+        width: 100%;
+    }
+}
