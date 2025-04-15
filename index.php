@@ -33,6 +33,7 @@ $countries = $countryController->getAllCountries();
 
 $ticketsController = new CartonController();
 $tickets = $ticketsController->getCartonSellBySorteo($sorteosActivos['id']);
+// print_r($tickets);die;
 // Protección contra session fixation
 session_regenerate_id(true);
 

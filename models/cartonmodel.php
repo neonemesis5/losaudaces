@@ -18,12 +18,12 @@ class CartonModel extends BaseModel {  // Nombre de clase con mayúscula
      * Obtiene las celdas asociadas a un sorteo específico.
      *
      * @param int $sorteoId ID del sorteo
-     * @return array Lista de celdas con sus IDs y nombres
+     * @return array Lista de celdas co n sus IDs y nombres
      */
     public function getCartonSellBySorteo($sorteoId): array {
         return $this->query(
-            "SELECT id,name FROM {$this->table} WHERE sorteo_id = :sorteo_id and `status`=:status ORDER BY numero ASC",
-            ['sorteoId' => $sorteoId, 'status' => 'V']  // Parámetro preparado
+            "SELECT id,numero FROM {$this->table} WHERE sorteo_id = :sorteo_id and status=:st ORDER BY numero ASC",
+            ['sorteo_id' => $sorteoId, 'st' => 'V']  // Parámetro preparado
         );
     }
 }
