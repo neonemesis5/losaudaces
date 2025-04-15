@@ -605,13 +605,22 @@ section.sorteos-container .btn-comprar:hover {
 	background-color: #45a049;
 }
 
+.carton-numero.vendido {
+    background-color: #f80505;
+    color: white;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
 
+.carton-numero.disponible {
+    /* background-color: #f8f9fa; */
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
 
-.carton-controls {
-    margin-bottom: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+.carton-numero.disponible:hover {
+    background-color: #e9efef;
+	color:#02250c;
 }
 
 .numero-busqueda {
@@ -640,13 +649,6 @@ section.sorteos-container .btn-comprar:hover {
     background-color: #45a049;
 }
 
-.rangos-numeros {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    overflow-x: auto;
-    padding-bottom: 6px;
-}
 
 .rango-btn {
     padding: 6px 2px;
@@ -662,59 +664,8 @@ section.sorteos-container .btn-comprar:hover {
     background-color: #dee6e3;
 }
 
-.carton-container {
-    width: 100%;
-    overflow-x: auto;
-}
-
-.carton-grid {
-    display: grid;
-    grid-template-columns: repeat(10, 1fr);
-    gap: 5px;
-    min-width: fit-content;
-}
-
-.numero-carton {
-    padding: 10px;
-    text-align: center;
-    border-radius: 4px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.2s;
-    min-width: 40px;
-}
-
-.numero-carton:hover {
-    transform: scale(1.05);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-}
-
-.numero-carton.disponible {
-    background-color: #4CAF50;
-    color: white;
-}
-
-.numero-carton.vendido {
-    background-color: #f44336;
-    color: white;
-    cursor: not-allowed;
-}
-
-.line-break {
-    grid-column: 1 / -1;
-    height: 0;
-}
-
 /* Responsive */
 @media (max-width: 768px) {
-    .carton-grid {
-        grid-template-columns: repeat(5, 1fr);
-    }
-    
-    .rangos-numeros {
-        gap: 5px;
-    }
-    
     .rango-btn {
         padding: 4px 8px;
         font-size: 0.9em;

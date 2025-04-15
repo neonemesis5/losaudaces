@@ -398,18 +398,33 @@ ini_set('error_log', __DIR__ . '/error.log');
 			function generarTablaNumeros(start, end) {
 				const tabla = document.querySelector('.numeros-tabla');
 				tabla.innerHTML = ''; // Limpiamos la tabla actual
-
+				// Convertir los números vendidos a formato 3 dígitos (001, 015, etc.)
+				const numerosVendidos = <?php echo json_encode(array_map(function($t) { 
+					return str_pad($t['numero'], 3, '0', STR_PAD_LEFT); 
+				}, $tickets)); ?>;
 				let num = start;
 				for (let i = 0; i < 10; i++) {
 					const row = document.createElement('tr');
 					for (let j = 0; j < 10; j++) {
 						if (num <= end && num < totalNumeros) {
+							const numeroFormateado = String(num).padStart(3, '0');
+							const estaVendido = numerosVendidos.includes(numeroFormateado);
+							
 							const cell = document.createElement('td');
 							const link = document.createElement('a');
-							link.href = '#';
+							link.href = estaVendido ? 'javascript:void(0)' : '#';// link.href = '#';
 							const div = document.createElement('div');
-							div.className = 'carton-numero';
-							div.textContent = String(num).padStart(3, '0');
+							div.className = 'carton-numero ' + (estaVendido ? 'vendido' : 'disponible');
+							div.textContent = numeroFormateado;
+							
+							if (estaVendido) {
+								div.title = 'Número ya vendido';
+							} else {
+								div.addEventListener('click', function() {
+									// Aquí puedes agregar la lógica para seleccionar el número
+									console.log('Número seleccionado:', numeroFormateado);
+								});
+							}
 							link.appendChild(div);
 							cell.appendChild(link);
 							row.appendChild(cell);
