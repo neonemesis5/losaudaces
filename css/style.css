@@ -1062,3 +1062,66 @@ button[type="submit"]:hover {
 .premio-caracteristicas p {
     margin-bottom: 8px;
 }
+
+/* Responsividad para sorteos */
+@media (max-width: 768px) {
+    section.sorteos-container {
+        margin-top: 150px;
+        padding: 0 1rem;
+    }
+
+    section.sorteos-container .sorteos,
+    section.sorteos-container .sorteo-info {
+        width: 100%;
+        left: 0;
+    }
+
+    section.sorteos-container .btn-comprar {
+        width: 100%;
+        font-size: 0.95rem;
+    }
+}
+
+/* Responsividad para cartón de números */
+@media (max-width: 768px) {
+    .carton-numeros {
+        margin-top: 100px;
+        padding: 1rem;
+    }
+
+    .numero, .carton-numero {
+        height: 35px;
+        width: 35px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Ajustes al footer */
+@media (max-width: 768px) {
+    .footer-content {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .footer-container {
+        gap: 2rem;
+        padding: 0 1rem;
+    }
+
+    .footer-list {
+        font-size: 0.9rem;
+    }
+}
+
+/* Mejora en hero background para móviles */
+@media (max-width: 768px) {
+    .hero-background {
+        height: 250px;
+    }
+
+    .purple-bar {
+        margin-top: 60px;
+        height: 50px;
+    }
+}

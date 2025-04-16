@@ -474,7 +474,49 @@ ini_set('error_log', __DIR__ . '/error.log');
 			// Llenamos la tabla inicialmente con los primeros 100 números
 			generarTablaNumeros(0, 99);
 
+			// Menú hamburguesa para móviles
+			const menuToggle = document.querySelector('.menu-toggle');
+			const mainNav = document.querySelector('.main-nav');
 
+			if (menuToggle && mainNav) {
+				// Función para alternar el menú
+				const toggleMenu = () => {
+					menuToggle.classList.toggle('active');
+					mainNav.classList.toggle('active');
+
+					// Bloquear el scroll del body cuando el menú está abierto
+					document.body.style.overflow = mainNav.classList.contains('active') ? 'hidden' : '';
+				};
+
+				// Evento para el botón hamburguesa
+				menuToggle.addEventListener('click', toggleMenu);
+
+				// Cerrar menú al hacer clic en un enlace
+				document.querySelectorAll('.main-nav a').forEach(link => {
+					link.addEventListener('click', () => {
+						if (mainNav.classList.contains('active')) {
+							toggleMenu();
+						}
+					});
+				});
+
+				// Cerrar menú al hacer clic fuera de él
+				document.addEventListener('click', (e) => {
+					if (mainNav.classList.contains('active') &&
+						!e.target.closest('.main-nav') &&
+						!e.target.closest('.menu-toggle')) {
+						toggleMenu();
+					}
+				});
+
+				// Manejar eventos táctiles para mejor experiencia en móviles
+				menuToggle.addEventListener('touchstart', (e) => {
+					e.preventDefault();
+					toggleMenu();
+				}, {
+					passive: false
+				});
+			}
 			// Slider de premios
 			const slider = document.querySelector('.slider');
 			const dotsContainer = document.querySelector('.slider-dots');
