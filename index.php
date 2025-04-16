@@ -4,7 +4,7 @@ header("X-Frame-Options: DENY");
 header("X-XSS-Protection: 1; mode=block");
 header("X-Content-Type-Options: nosniff");
 header("Referrer-Policy: strict-origin-when-cross-origin");
-// header("Content-Security-Policy: default-src 'self' https: 'unsafe-inline' 'unsafe-eval'; img-src 'self' data:;");
+header("Content-Security-Policy: default-src 'self' https: 'unsafe-inline' 'unsafe-eval'; img-src 'self' data:;");
 // header("Content-Security-Policy: default-src 'self' https: 'unsafe-inline' 'unsafe-eval'; img-src 'self' data:; script-src 'self' https://maps.googleapis.com https://maps.gstatic.com; frame-src https://www.google.com;");
 
 // Configuración de sesión segura
@@ -19,14 +19,12 @@ session_start([
 require __DIR__ . '/controllers/sorteocontroller.php';
 require __DIR__ . '/controllers/locationcontroller.php';
 require __DIR__ . '/controllers/cartoncontroller.php';
+require __DIR__ . '/controllers/premioscontroller.php';
 
 
 // Crear instancia del controlador
 $sorteoController = new SorteoController();
 $sorteosActivos = $sorteoController->getActiveSorteos();
-// $_REQUEST['qtyTotal'] = $sorteosActivos['qtynumeros'] ?? 1;
-// $_REQUEST['qtyRows'] = $sorteosActivos['qtynumeros'] / 100 ?? 1;
-// $_REQUEST['qtyPages'] = $_REQUEST['qtynumeros'] / 100;
 
 $countryController = new LocationController();
 $countries = $countryController->getAllCountries();
@@ -34,7 +32,10 @@ $countries = $countryController->getAllCountries();
 
 $ticketsController = new CartonController();
 $tickets = $ticketsController->getCartonSellBySorteo($sorteosActivos['id']);
-// print_r($tickets);die;
+
+$premiosController = new PremiosController();
+$premios = $premiosController->getPremiosSorteo($sorteosActivos['id']);
+
 // Protección contra session fixation
 session_regenerate_id(true);
 
@@ -95,7 +96,7 @@ ini_set('error_log', __DIR__ . '/error.log');
 
 		<!-- Contenido principal -->
 		<main class="main-content">
-			<div id="home-section" style="display: block;"> <!-- MOSTRAR POR DEFECTO -->
+			<section id="home-section" style="display: block;"> <!-- MOSTRAR POR DEFECTO -->
 				<div class="hero-section">
 					<div class="hero-background">
 						<div class="purple-bar"></div>
@@ -123,9 +124,9 @@ ini_set('error_log', __DIR__ . '/error.log');
 						<div class="slider-dots"></div>
 					</div>
 				</section>
-			</div>
+			</section>
 
-			<div id="rifas-section" style="display: none; "> <!-- OCULTA POR DEFECTO -->
+			<section id="rifas-section" style="display: none; "> <!-- OCULTA POR DEFECTO -->
 				<section class="sorteos-container">
 					<div class="sorteos">
 						<img src="resources/premios/<?php echo htmlspecialchars($sorteosActivos['FOTO'] ?? 'default.jpg'); ?>" alt="Premios de Sorteo" class="sorteo-image">
@@ -136,9 +137,9 @@ ini_set('error_log', __DIR__ . '/error.log');
 						<button id="comprar_num" class="btn-comprar" data-sorteo="<?php echo htmlspecialchars($sorteosActivos['id'] ?? ''); ?>">Comprar Boleto</button>
 					</div>
 				</section>
-			</div>
+			</section>
 
-			<div id="carton-num" class="carton-numeros" style="display: none;">
+			<section id="carton-num" class="carton-numeros" style="display: none;">
 				<div class="rango-num">
 					<?php
 					$totalPages = ceil($sorteosActivos['qtynumeros'] / 100);
@@ -155,9 +156,9 @@ ini_set('error_log', __DIR__ . '/error.log');
 				</div>
 				<!-- Esta tabla será llenada dinámicamente por JavaScript -->
 				<table class="numeros-tabla"></table>
-			</div>
+			</section>
 
-			<div> <!-- OCULTA POR DEFECTO formulario de registro de usuario para compra -->
+			<section id="form-comprar" style="display: none;"> <!-- OCULTA POR DEFECTO formulario de registro de usuario para compra -->
 				<form id="registroForm" method="post" action="" style="display: none; ">
 					<h1>Registrate</h1>
 
@@ -200,7 +201,7 @@ ini_set('error_log', __DIR__ . '/error.log');
 
 					<button type="submit" class="submit-btn">ENVIAR</button>
 				</form>
-			</div>
+			</section>
 
 			<section id="contacto-section" style="display: none;">
 				<!-- MAPA DE GOOGLE -->
@@ -233,6 +234,25 @@ ini_set('error_log', __DIR__ . '/error.log');
 
 			</section>
 
+			<section id="showpremios" style="display: none;">
+				<div id="thumbsnail">
+					<?php
+					foreach ($premios as $k => $v) {
+						echo '<a target="_blank" >';
+						echo '<img src="resources/premios/' . htmlspecialchars($v['foto']) . '" alt="Forest">';
+						echo '</a>';
+					}
+					?>
+				</div>
+				<div id="detailpremio">
+					<div id="foto">
+
+					</div>
+					<div id="detalle">
+
+					</div>
+				</div>
+			</section>
 			<!-- Modal para compra -->
 			<div id="compraModal" class="modal">
 				<div class="modal-content">
@@ -289,178 +309,39 @@ ini_set('error_log', __DIR__ . '/error.log');
 	</div>
 
 	<script>
-		function initMap() {
-			const ubicacion = {
-				lat: 7.8891,
-				lng: -72.5078
-			}; // Coordenadas de ejemplo (Cúcuta)
-			const map = new google.maps.Map(document.getElementById("mapa"), {
-				zoom: 16,
-				center: ubicacion,
-			});
-			new google.maps.Marker({
-				position: ubicacion,
-				map: map,
-				title: "Los Audaces",
-			});
-		}
-
-		function loadGoogleMaps() {
-			const script = document.createElement('script');
-			script.src = 'https://maps.googleapis.com/maps/api/js?key=TU_API_KEY_MAPS&callback=initMap';
-			script.async = true;
-			script.defer = true;
-			document.body.appendChild(script);
-		}
-
-
-		document.addEventListener('DOMContentLoaded', function() {
-			const slider = document.querySelector('.slider');
-			const dotsContainer = document.querySelector('.slider-dots');
-			const prevBtn = document.querySelector('.prev-btn');
-			const nextBtn = document.querySelector('.next-btn');
-			const menuToggle = document.querySelector('.menu-toggle');
-			const mainNav = document.querySelector('.main-nav');
-
-			menuToggle.addEventListener('click', function() {
-				this.classList.toggle('active');
-				mainNav.classList.toggle('active');
-
-				// Cambiar aria-expanded para accesibilidad
-				const isExpanded = this.getAttribute('aria-expanded') === 'true';
-				this.setAttribute('aria-expanded', !isExpanded);
-			});
-
-			// Cerrar menú al hacer clic en enlaces (mobile)
-			document.querySelectorAll('.main-nav a').forEach(link => {
-				link.addEventListener('click', function() {
-					if (window.innerWidth <= 768) {
-						menuToggle.classList.remove('active');
-						mainNav.classList.remove('active');
-						menuToggle.setAttribute('aria-expanded', 'false');
-					}
+		document.addEventListener('DOMContentLoaded', () => {
+			// Utilidad: mostrar una sección y ocultar el resto
+			const showSection = (id) => {
+				['home-section', 'rifas-section', 'carton-num', 'contacto-section', 'showpremios'].forEach(sec => {
+					const el = document.getElementById(sec);
+					if (el) el.style.display = (sec === id) ? (id === 'carton-num' || id === 'contacto-section' ? 'flex' : 'block') : 'none';
 				});
-			});
-
-			// Obtener todas las imágenes de premios de la carpeta
-			const premiosImages = [
-				'resources/premios/celular.jpeg',
-				'resources/premios/Moto.jpeg',
-				'resources/premios/Viaje.jpeg'
-				// Agrega más rutas según necesites
-			];
-
-			let currentSlide = 0;
-
-			// Cargar imágenes en el slider
-			function loadImages() {
-				slider.innerHTML = '';
-				dotsContainer.innerHTML = '';
-
-				premiosImages.forEach((imgSrc, index) => {
-					// Crear slide
-					const slide = document.createElement('div');
-					slide.className = 'slide';
-					slide.style.minWidth = '100%';
-
-					const img = document.createElement('img');
-					img.src = imgSrc;
-					img.alt = `Premio ${index + 1}`;
-					slide.appendChild(img);
-					slider.appendChild(slide);
-
-					// Crear dots
-					const dot = document.createElement('div');
-					dot.className = 'dot';
-					if (index === 0) dot.classList.add('active');
-					dot.addEventListener('click', () => goToSlide(index));
-					dotsContainer.appendChild(dot);
-				});
-			}
-
-			// Ir a slide específico
-			function goToSlide(slideIndex) {
-				currentSlide = slideIndex;
-				updateSlider();
-			}
-
-			// Actualizar slider
-			function updateSlider() {
-				slider.style.transform = `translateX(-${currentSlide * 100}%)`;
-
-				// Actualizar dots
-				const dots = document.querySelectorAll('.dot');
-				dots.forEach((dot, index) => {
-					dot.classList.toggle('active', index === currentSlide);
-				});
-			}
-
-			// Siguiente slide
-			function nextSlide() {
-				currentSlide = (currentSlide + 1) % premiosImages.length;
-				updateSlider();
-			}
-
-			// Slide anterior
-			function prevSlide() {
-				currentSlide = (currentSlide - 1 + premiosImages.length) % premiosImages.length;
-				updateSlider();
-			}
-
-			// Event listeners
-			nextBtn.addEventListener('click', nextSlide);
-			prevBtn.addEventListener('click', prevSlide);
-
-			// Auto-slide cada 5 segundos
-			let slideInterval = setInterval(nextSlide, 5000);
-
-			// Pausar auto-slide al interactuar
-			slider.addEventListener('mouseenter', () => clearInterval(slideInterval));
-			slider.addEventListener('mouseleave', () => {
-				clearInterval(slideInterval);
-				slideInterval = setInterval(nextSlide, 5000);
-			});
-
-			// Cargar imágenes iniciales
-			loadImages();
-
-
-			// Cambiar entre secciones
-			document.querySelector('#rifas').addEventListener('click', function(e) {
-				e.preventDefault();
-
-				document.getElementById('home-section').style.display = 'none';
-				document.getElementById('rifas-section').style.display = 'block';
-				document.getElementById('carton-num').style.display = 'none';
-				document.getElementById('contacto-section').style.display = 'none';
-				window.scrollTo(0, 0); // Opcional: volver arriba
-			});
-
-			// Si tienes un botón o link con ID "inicio", puedes hacer esto:
-			document.querySelector('#inicio')?.addEventListener('click', function(e) {
-				e.preventDefault();
-
-				document.getElementById('home-section').style.display = 'block';
-				document.getElementById('rifas-section').style.display = 'none';
 				window.scrollTo(0, 0);
-			});
-			document.querySelector('#comprar_num').addEventListener('click', function(e) {
+			};
+
+			// Navegación
+			document.querySelector('#inicio')?.addEventListener('click', e => {
 				e.preventDefault();
-
-
-				document.getElementById('rifas-section').style.display = 'none';
-				document.getElementById('carton-num').style.display = 'flex';
-				window.scrollTo(0, 0); // Opcional: volver arriba
+				showSection('home-section');
 			});
-			//comprar_numprin
-			document.querySelector('#comprar_numprin').addEventListener('click', function(e) {
+			document.querySelector('#rifas')?.addEventListener('click', e => {
 				e.preventDefault();
-
-				document.getElementById('home-section').style.display = 'none';
-				document.getElementById('contacto-section').style.display = 'none';
-				document.getElementById('carton-num').style.display = 'flex';
-				window.scrollTo(0, 0); // Opcional: volver arriba
+				showSection('rifas-section');
 			});
+			document.querySelector('#contact')?.addEventListener('click', e => {
+				e.preventDefault();
+				showSection('contacto-section');
+				loadGoogleMaps();
+			});
+			document.querySelector('#comprar_numprin')?.addEventListener('click', e => {
+				e.preventDefault();
+				showSection('carton-num');
+			});
+			document.querySelector('#comprar_num')?.addEventListener('click', e => {
+				e.preventDefault();
+				showSection('carton-num');
+			});
+
 
 			// Valor total de números disponibles, esto deberías pasarlo desde PHP si es dinámico
 			const totalNumeros = <?php echo intval($sorteosActivos['qtynumeros']); ?>;
@@ -519,37 +400,112 @@ ini_set('error_log', __DIR__ . '/error.log');
 			// Llenamos la tabla inicialmente con los primeros 100 números
 			generarTablaNumeros(0, 99);
 
-			// document.querySelector('#contact').addEventListener('click', function(e) {
-			// 	e.preventDefault();
-			// 	document.getElementById('home-section').style.display = 'none';
-			// 	document.getElementById('rifas-section').style.display = 'none';
-			// 	document.getElementById('carton-num').style.display = 'none';
-			// 	document.getElementById('contacto-section').style.display = 'flex';
-			// 	window.scrollTo(0, 0);
-			// });
 
+			// Slider de premios
+			const slider = document.querySelector('.slider');
+			const dotsContainer = document.querySelector('.slider-dots');
+			const prevBtn = document.querySelector('.prev-btn');
+			const nextBtn = document.querySelector('.next-btn');
 
-			document.querySelector('#contact').addEventListener('click', function(e) {
-				e.preventDefault();
-				document.getElementById('home-section').style.display = 'none';
-				document.getElementById('rifas-section').style.display = 'none';
-				document.getElementById('carton-num').style.display = 'none';
-				document.getElementById('contacto-section').style.display = 'flex';
-				window.scrollTo(0, 0);
+			const premiosImages = [
+				'resources/premios/celular.jpeg',
+				'resources/premios/Moto.jpeg',
+				'resources/premios/Viaje.jpeg'
+			];
 
-				// Cargar el mapa solo cuando sea necesario
-				if (typeof google === 'undefined') {
-					loadGoogleMaps();
-				} else if (typeof initMap === 'function') {
-					initMap();
-				}
+			let currentSlide = 0;
+			let slideInterval;
+
+			function renderSlider() {
+				if (!slider || !dotsContainer) return;
+				slider.innerHTML = '';
+				dotsContainer.innerHTML = '';
+
+				premiosImages.forEach((src, i) => {
+					const slide = document.createElement('div');
+					slide.className = 'slide';
+					slide.style.minWidth = '100%';
+
+					const img = document.createElement('img');
+					img.src = src;
+					img.alt = `Premio ${i + 1}`;
+					slide.appendChild(img);
+					slider.appendChild(slide);
+
+					const dot = document.createElement('div');
+					dot.className = 'dot' + (i === 0 ? ' active' : '');
+					dot.addEventListener('click', () => goToSlide(i));
+					dotsContainer.appendChild(dot);
+				});
+
+				startAutoSlide();
+			}
+
+			function goToSlide(i) {
+				currentSlide = i;
+				slider.style.transform = `translateX(-${i * 100}%)`;
+				document.querySelectorAll('.dot').forEach((d, index) => d.classList.toggle('active', index === i));
+			}
+
+			function nextSlide() {
+				goToSlide((currentSlide + 1) % premiosImages.length);
+			}
+
+			function prevSlide() {
+				goToSlide((currentSlide - 1 + premiosImages.length) % premiosImages.length);
+			}
+
+			function startAutoSlide() {
+				clearInterval(slideInterval);
+				slideInterval = setInterval(nextSlide, 5000);
+			}
+
+			nextBtn?.addEventListener('click', () => {
+				nextSlide();
+				startAutoSlide();
+			});
+			prevBtn?.addEventListener('click', () => {
+				prevSlide();
+				startAutoSlide();
 			});
 
+			slider?.addEventListener('mouseenter', () => clearInterval(slideInterval));
+			slider?.addEventListener('mouseleave', startAutoSlide);
 
+			renderSlider();
 
+			// Cargar Google Maps solo si no ha sido cargado
+			let mapLoaded = false;
 
+			function initMap() {
+				const ubicacion = {
+					lat: 7.8891,
+					lng: -72.5078
+				};
+				const map = new google.maps.Map(document.getElementById("mapa"), {
+					zoom: 16,
+					center: ubicacion,
+				});
+				new google.maps.Marker({
+					position: ubicacion,
+					map: map,
+					title: "Los Audaces",
+				});
+			}
+
+			function loadGoogleMaps() {
+				if (mapLoaded) return;
+				const script = document.createElement('script');
+				script.src = 'https://maps.googleapis.com/maps/api/js?key=TU_API_KEY_MAPS&callback=initMap';
+				script.async = true;
+				script.defer = true;
+				document.body.appendChild(script);
+				mapLoaded = true;
+			}
 		});
 	</script>
+
+
 	<script async defer src="https://maps.googleapis.com/maps/api/js?key=TU_API_KEY_MAPS&callback=initMap"></script>
 </body>
 

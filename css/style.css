@@ -930,6 +930,7 @@ button[type="submit"]:hover {
     background-color: #45a049;
 }
 
+
 /* Responsive: cuando la pantalla es pequeña, apilar verticalmente */
 @media (max-width: 768px) {
     #contacto-section {

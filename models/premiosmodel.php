@@ -18,11 +18,10 @@ class PremiosModel extends BaseModel {  // Nombre de clase con mayúscula
      */
     public function getPremiosSorteo($idSorteo): array {
         return $this->query(
-            "SELECT `name`, `descripcion`, `posicion`, `valor`, `foto` 
-             FROM {$this->table} 
-             WHERE sorteo_id = :sorteo_id AND `status` = :status 
-             ORDER BY posicion ASC",
-            ['sorteo_id' => $idSorteo,'status' => 'A']  // Parámetro preparado
+            "SELECT `name`, `descripcion`, `posicion`, `valor`, `foto` FROM {$this->table} 
+            WHERE sorteo_id = :sorteoId AND `status` = :st 
+            ORDER BY posicion ASC",
+            ['sorteoId' => $idSorteo,'st' => 'A']  // Parámetro preparado
         );
     }
 
