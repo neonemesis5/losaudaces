@@ -67,7 +67,11 @@ ini_set('error_log', __DIR__ . '/error.log');
 	<link href="css/style.css" rel="stylesheet">
 	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 	<link rel="icon" href="resources/logo.png" type="image/png">
-
+	<!-- Preload de imágenes de premios -->
+	<!-- Preload de imágenes de premios -->
+	<?php foreach ($premios as $premio): ?>
+		<link rel="preload" href="resources/premios/<?php echo htmlspecialchars($premio['foto']); ?>" as="image" imagesrcset="resources/premios/<?php echo htmlspecialchars($premio['foto']); ?> 1x, resources/premios/<?php echo htmlspecialchars($premio['foto']); ?> 2x">
+	<?php endforeach; ?>
 </head>
 
 <body>
@@ -235,21 +239,36 @@ ini_set('error_log', __DIR__ . '/error.log');
 			</section>
 
 			<section id="showpremios" style="display: none;">
-				<div id="thumbsnail">
-					<?php
-					foreach ($premios as $k => $v) {
-						echo '<a target="_blank" >';
-						echo '<img src="resources/premios/' . htmlspecialchars($v['foto']) . '" alt="Forest">';
-						echo '</a>';
-					}
-					?>
-				</div>
-				<div id="detailpremio">
-					<div id="foto">
-
+				<div class="premios-container">
+					<div class="thumbs-container">
+						<?php
+						require __DIR__ . '/thumbnail.php';
+						foreach ($premios as $k => $v) {
+							$thumbPath = getThumbnail('resources/premios/' . htmlspecialchars($v['foto']));
+							echo '<div class="thumb-item" data-premio-id="' . $k . '">';
+							echo '<img src="' . $thumbPath . '" alt="' . htmlspecialchars($v['name'] ?? 'Premio') . '" class="thumb-img">';
+							echo '<div class="thumb-title">' . htmlspecialchars($v['name'] ?? 'Premio') . '</div>';
+							echo '</div>';
+						}
+						?>
 					</div>
-					<div id="detalle">
 
+					<div class="premio-detalle">
+						<?php if (!empty($premios)): ?>
+							<div class="premio-imagen">
+								<img src="resources/premios/<?php echo htmlspecialchars($premios[0]['foto']); ?>" alt="<?php echo htmlspecialchars($premios[0]['name']); ?>" id="detalle-imagen">
+							</div>
+							<div class="premio-info" id="detalle-info">
+								<h2><?php echo htmlspecialchars($premios[0]['name']); ?></h2>
+								<p><?php echo htmlspecialchars($premios[0]['descripcion']); ?></p>
+								<div class="premio-caracteristicas">
+									<?php if (!empty($premios[0]['valor'])): ?>
+										<p><strong>Valor:</strong> $<?php echo number_format($premios[0]['valor'], 2, ',', '.'); ?></p>
+									<?php endif; ?>
+									<p><strong>Posición:</strong> <?php echo htmlspecialchars($premios[0]['posicion']); ?></p>
+								</div>
+							</div>
+						<?php endif; ?>
 					</div>
 				</div>
 			</section>
@@ -341,6 +360,61 @@ ini_set('error_log', __DIR__ . '/error.log');
 				e.preventDefault();
 				showSection('carton-num');
 			});
+
+			// En la sección de JavaScript existente, agrega esto:
+
+			// Mostrar sección de premios
+			document.querySelector('#premios')?.addEventListener('click', e => {
+				e.preventDefault();
+				showSection('showpremios');
+
+				// Inicializar la galería de premios
+				initPremiosGallery();
+			});
+
+			// Función para inicializar la galería de premios
+			// Función para inicializar la galería de premios
+			function initPremiosGallery() {
+				const thumbItems = document.querySelectorAll('.thumb-item');
+				const detalleImagen = document.getElementById('detalle-imagen');
+				const detalleInfo = document.getElementById('detalle-info');
+
+				// Datos de los premios desde PHP
+				const premiosData = <?php echo json_encode($premios); ?>;
+
+				if (thumbItems.length > 0 && premiosData.length > 0) {
+					// Seleccionar el primer premio por defecto
+					thumbItems[0].classList.add('active');
+
+					// Manejar clic en los thumbnails
+					thumbItems.forEach((item, index) => {
+						item.addEventListener('click', () => {
+							// Remover clase active de todos los thumbnails
+							thumbItems.forEach(thumb => thumb.classList.remove('active'));
+
+							// Agregar clase active al thumbnail seleccionado
+							item.classList.add('active');
+
+							// Actualizar el detalle del premio
+							const premio = premiosData[index];
+							if (premio) {
+								detalleImagen.src = 'resources/premios/' + premio.foto;
+								detalleImagen.alt = premio.name;
+
+								detalleInfo.innerHTML = `
+                        <h2>${premio.name}</h2>
+                        <p>${premio.descripcion || ''}</p>
+                        <div class="premio-caracteristicas">
+                            ${premio.valor ? `<p><strong>Valor:</strong> $${parseFloat(premio.valor).toLocaleString('es-ES', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>` : ''}
+                            <p><strong>Posición:</strong> ${premio.posicion}</p>
+                        </div>
+                    `;
+							}
+						});
+					});
+				}
+			}
+
 
 
 			// Valor total de números disponibles, esto deberías pasarlo desde PHP si es dinámico
