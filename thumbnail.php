@@ -1,5 +1,5 @@
 <?php
-// thumbnail.php
+// thumbnail.php https://pqina.nl/blog/creating-thumbnails-with-php/
 function createThumbnail($sourcePath, $destPath, $width = 200, $height = 150) {
     // Obtener información de la imagen
     $info = getimagesize($sourcePath);

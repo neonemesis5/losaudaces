@@ -20,6 +20,8 @@ require __DIR__ . '/controllers/sorteocontroller.php';
 require __DIR__ . '/controllers/locationcontroller.php';
 require __DIR__ . '/controllers/cartoncontroller.php';
 require __DIR__ . '/controllers/premioscontroller.php';
+require __DIR__ . '/controllers/entidadescontroller.php';
+require __DIR__ . '/controllers/personacontroller.php';
 
 
 // Crear instancia del controlador
@@ -35,6 +37,13 @@ $tickets = $ticketsController->getCartonSellBySorteo($sorteosActivos['id']);
 
 $premiosController = new PremiosController();
 $premios = $premiosController->getPremiosSorteo($sorteosActivos['id']);
+
+$entidadesController = new EntidadesController();
+$entidades = $entidadesController->getEntidades();
+
+$personaController = new PersonaController();
+// $persona = $personaController->getAll(); //PRUEBA FUNCIONAL PARA LUEGO CARGAR LOS GANADORES
+// var_dump($persona);die;
 
 // Protección contra session fixation
 session_regenerate_id(true);
@@ -238,6 +247,74 @@ ini_set('error_log', __DIR__ . '/error.log');
 
 			</section>
 
+			<section id="registroCliente" style="display: none;">
+				<div class="metodos-pago-horizontal">
+					<?php foreach ($entidades as $entidad): ?>
+						<div class="metodo-pago-item">
+							<div class="logo-entidad">
+								<img src="<?php echo 'resources/entidades/' . $entidad['logo']; ?>" alt="<?php echo $entidad['nombreentidad']; ?>">
+
+							</div>
+							<div class="detalles-entidad">
+								<h4><?php echo $entidad['nombreentidad']; ?></h4>
+								<div class="datos-cuenta">
+									<?php if (!empty($entidad['tipocta'])): ?>
+										<span class="dato"><strong>Tipo:</strong> <?php echo $entidad['tipocta']; ?></span>
+									<?php endif; ?>
+
+									<?php if (!empty($entidad['numcta'])): ?>
+										<span class="dato"><strong>Cuenta:</strong> <?php echo $entidad['numcta']; ?></span>
+									<?php endif; ?>
+
+									<?php if (!empty($entidad['nombretitular'])): ?>
+										<span class="dato"><strong>Titular:</strong> <?php echo $entidad['nombretitular']; ?></span>
+									<?php endif; ?>
+
+									<?php if (!empty($entidad['cedulatitular'])): ?>
+										<span class="dato"><strong>ID:</strong> <?php echo $entidad['cedulatitular']; ?></span>
+									<?php endif; ?>
+
+									<?php if (!empty($entidad['emailcta'])): ?>
+										<span class="dato"><strong>Email:</strong> <?php echo $entidad['emailcta']; ?></span>
+									<?php endif; ?>
+								</div>
+							</div>
+						</div>
+					<?php endforeach; ?>
+				</div>
+				<div class="modal-content">
+					<span class="close">&times;</span>
+					<h2>Registro de Cliente</h2>
+					<form id="registroClienteForm">
+						<label for="nombre">Nombre:</label>
+						<input type="text" id="nombre" class="input" name="nombre" required>
+
+						<label for="apellido">Apellido:</label>
+						<input type="text" id="apellido" name="apellido" class="input" required>
+
+						<label for="numIdentificacion">Número de Identificación:</label>
+						<input type="text" id="numIdentificacion" name="numIdentificacion" class="input" required>
+
+						<label for="pais">País:</label>
+						<select id="pais" name="pais" required>
+							<option value="">Seleccione un país</option>
+							<?php foreach ($countries as $country): ?>
+								<option value="<?php echo $country['id']; ?>"><?php echo $country['name']; ?></option>
+							<?php endforeach; ?>
+						</select>
+
+
+						<label for="email">Email:</label>
+						<input type="email" id="email" name="email" class="input" required>
+
+						<label for="telefono">Número de Teléfono:</label>
+						<input type="tel" id="telefono" name="telefono" class="input" required>
+
+						<button type="submit">Registrar</button>
+					</form>
+				</div>
+			</section>
+
 			<section id="showpremios" style="display: none;">
 				<div class="premios-container">
 					<div class="thumbs-container">
@@ -272,8 +349,51 @@ ini_set('error_log', __DIR__ . '/error.log');
 					</div>
 				</div>
 			</section>
+
+			<!-- Modal de Login -->
+			<div id="loginModal" class="modal" style="display: none;">
+				<div class="modal-content">
+					<span class="close" id="closeLoginModal">&times;</span>
+					<h2>Iniciar Sesión</h2>
+					<form id="loginForm">
+						<label for="login">Usuario o Email:</label>
+						<input type="text" name="login" id="login" required>
+
+						<label for="password">Contraseña:</label>
+						<input type="password" name="password" id="password" required>
+
+						<button type="submit">Ingresar</button>
+					</form>
+					<div id="loginMessage"></div>
+				</div>
+			</div>
+			
+			<div id="shopcart" style="display: block;">
+				<h1 class="">Shopping Cart</h1>
+				<div class="body">
+					<div class="container">
+						<h3 class="heading">Products</h3>
+						<div class="result"></div>
+					</div>
+					<div class="cart">
+						<div class="cart-header">
+							<h3>CART</h3>
+							<p class="noOfItems">0 items</p>
+						</div>
+						<hr noshade="true" size="1px" />
+						<div class="cart-items"></div>
+						<hr noshade="true" size="1px" />
+						<div class="cart-footer cart-header">
+							<h4>Total</h4>
+							<p class="total">$0</p>
+						</div>
+						<button class="buy-btn">PROCEED TO BUY</button>
+					</div>
+				</div>
+			</div>
+
 			<!-- Modal para compra -->
-			<div id="compraModal" class="modal">
+			<div id="compraModal" class="modal" style="display:none;">
 				<div class="modal-content">
 					<span class="close-modal">&times;</span>
 					<h3 id="modalSorteoTitulo"></h3>
@@ -618,6 +738,52 @@ ini_set('error_log', __DIR__ . '/error.log');
 				document.body.appendChild(script);
 				mapLoaded = true;
 			}
+			// Mostrar modal de login
+			document.querySelector('#login').addEventListener('click', function(e) {
+				e.preventDefault();
+				document.getElementById('loginModal').style.display = 'block';
+			});
+
+			// Cerrar modal de login
+			document.getElementById('closeLoginModal').addEventListener('click', function() {
+				document.getElementById('loginModal').style.display = 'none';
+				document.getElementById('loginMessage').textContent = '';
+			});
+
+			// Envío del formulario de login por AJAX
+			document.getElementById('loginForm').addEventListener('submit', function(e) {
+				e.preventDefault();
+
+				const login = document.getElementById('login').value;
+				const password = document.getElementById('password').value;
+
+				fetch('login.php', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/x-www-form-urlencoded'
+						},
+						body: `login=${encodeURIComponent(login)}&password=${encodeURIComponent(password)}`
+					})
+					.then(response => response.text())
+					.then(data => {
+						const mensaje = document.getElementById('loginMessage');
+						if (data.includes('Bienvenido')) {
+							mensaje.textContent = data;
+							mensaje.style.color = 'green';
+							setTimeout(() => {
+								document.getElementById('loginModal').style.display = 'none';
+								// Aquí podrías actualizar el navbar o mostrar datos del usuario
+							}, 1500);
+						} else {
+							mensaje.textContent = data;
+							mensaje.style.color = 'red';
+						}
+					})
+					.catch(error => {
+						console.error('Error:', error);
+					});
+			});
+
 		});
 	</script>
 
