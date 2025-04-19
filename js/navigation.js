@@ -1,7 +1,7 @@
 // Función para mostrar/ocultar secciones
 export const showSection = (id) => {
     // Lista de todas las secciones principales
-    const allSections = ['home-section', 'rifas-section', 'contacto-section', 'showpremios', 'carton-num', 'shopcart'];
+    const allSections = ['home-section', 'rifas-section', 'contacto-section', 'showpremios', 'carton-num', 'shopcart','registroCliente'];
     
     allSections.forEach(sec => {
         const el = document.getElementById(sec);
@@ -52,6 +52,11 @@ export const setupNavigation = () => {
         showSection('carton-num');
     });
     
+    document.querySelector('#regcompra')?.addEventListener('click', e => {
+        e.preventDefault();
+        showSection('registroCliente');
+    });
+
     document.querySelector('#premios')?.addEventListener('click', e => {
         e.preventDefault();
         showSection('showpremios');

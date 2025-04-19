@@ -16,10 +16,10 @@ export const setupTicketsTable = (totalNumeros, numerosVendidos, precioNumero) =
         numerosSeleccionados.forEach(numero => {
             const item = document.createElement('div');
             item.className = 'cart-item';
-            item.innerHTML = `
-            <div class="numero-seleccionado">${numero}</div>
-            <div class="remove-item" data-numero="${numero}">×</div>
-        `;
+        //     item.innerHTML = `
+        //     <div class="numero-seleccionado">${numero}</div>
+        //     <div class="remove-item" data-numero="${numero}">×</div>
+        // `;
             cartItems.appendChild(item);
 
             // Mostrar también en la sección de resultados
@@ -30,7 +30,7 @@ export const setupTicketsTable = (totalNumeros, numerosVendidos, precioNumero) =
         });
 
         // Actualizar contador
-        noOfItems.textContent = `${numerosSeleccionados.length} items`;
+        noOfItems.textContent = `${numerosSeleccionados.length} `;//Numeros
 
         // Actualizar el total (aquí está el cambio principal)
         const total = parseFloat(numerosSeleccionados.length * precioNumero);

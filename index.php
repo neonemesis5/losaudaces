@@ -314,7 +314,7 @@ ini_set('error_log', __DIR__ . '/error.log');
 							<input type="checkbox" id="is_adult" name="is_adult" class="input" required style="margin-right: 10px;">
 							<label for="is_adult" style="margin-bottom: 0;">Soy Mayor de Edad</label>
 						</div>						
-						<button type="submit">Registrar</button>
+						<button id="regCliente" type="submit">Registrar</button>
 					</form>
 				</div>
 			</section>
@@ -381,17 +381,17 @@ ini_set('error_log', __DIR__ . '/error.log');
 					</div>
 					<div class="cart">
 						<div class="cart-header">
-							<h4>Carrito de Compras</h4>
+							<h4>Cant. Selec. </h4>
 							<p class="noOfItems">0 items</p>
 						</div>
-						<hr noshade="true" size="1px" />
+						<!-- <hr noshade="true" size="1px" /> -->
 						<div class="cart-items"></div>
 						<hr noshade="true" size="1px" />
 						<div class="cart-footer cart-header">
 							<h4>Total</h4>
 							<p class="total">$0</p>
 						</div>
-						<button class="buy-btn">Comprar Seleccionados</button>
+						<button id="regcompra" class="buy-btn">Comprar Seleccionados</button>
 					</div>
 				</div>
 			</div>
@@ -472,9 +472,7 @@ ini_set('error_log', __DIR__ . '/error.log');
 
 	<!-- Google Maps (mantener este script al final) -->
 	<script async defer src="https://maps.googleapis.com/maps/api/js?key=TU_API_KEY_MAPS&callback=initMap"></script>
-
-
-	<script async defer src="https://maps.googleapis.com/maps/api/js?key=TU_API_KEY_MAPS&callback=initMap"></script>
+	<!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=TU_API_KEY_MAPS&callback=initMap"></script> -->
 </body>
 
 </html>
