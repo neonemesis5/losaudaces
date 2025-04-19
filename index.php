@@ -309,7 +309,11 @@ ini_set('error_log', __DIR__ . '/error.log');
 
 						<label for="telefono">Número de Teléfono:</label>
 						<input type="tel" id="telefono" name="telefono" class="input" required>
-
+						
+						<div class="checkbox-container" style="display: flex; align-items: center; margin: 10px 0;">
+							<input type="checkbox" id="is_adult" name="is_adult" class="input" required style="margin-right: 10px;">
+							<label for="is_adult" style="margin-bottom: 0;">Soy Mayor de Edad</label>
+						</div>						
 						<button type="submit">Registrar</button>
 					</form>
 				</div>
@@ -367,17 +371,17 @@ ini_set('error_log', __DIR__ . '/error.log');
 					<div id="loginMessage"></div>
 				</div>
 			</div>
-			
-			<div id="shopcart" style="display: block;">
-				<h1 class="">Shopping Cart</h1>
+
+			<div id="shopcart" style="display: none;">
+				<h2 class="">Carrito de Compras</h2>
 				<div class="body">
 					<div class="container">
-						<h3 class="heading">Products</h3>
+						<h4 class="heading">Numeros Seleccionados</h4>
 						<div class="result"></div>
 					</div>
 					<div class="cart">
 						<div class="cart-header">
-							<h3>CART</h3>
+							<h4>Carrito de Compras</h4>
 							<p class="noOfItems">0 items</p>
 						</div>
 						<hr noshade="true" size="1px" />
@@ -387,7 +391,7 @@ ini_set('error_log', __DIR__ . '/error.log');
 							<h4>Total</h4>
 							<p class="total">$0</p>
 						</div>
-						<button class="buy-btn">PROCEED TO BUY</button>
+						<button class="buy-btn">Comprar Seleccionados</button>
 					</div>
 				</div>
 			</div>
@@ -446,346 +450,27 @@ ini_set('error_log', __DIR__ . '/error.log');
 			</div>
 		</footer>
 	</div>
-
+	<!-- Pasar datos PHP a JavaScript -->
 	<script>
-		document.addEventListener('DOMContentLoaded', () => {
-			// Utilidad: mostrar una sección y ocultar el resto
-			const showSection = (id) => {
-				['home-section', 'rifas-section', 'carton-num', 'contacto-section', 'showpremios'].forEach(sec => {
-					const el = document.getElementById(sec);
-					if (el) el.style.display = (sec === id) ? (id === 'carton-num' || id === 'contacto-section' ? 'flex' : 'block') : 'none';
-				});
-				window.scrollTo(0, 0);
-			};
-
-			// Navegación
-			document.querySelector('#inicio')?.addEventListener('click', e => {
-				e.preventDefault();
-				showSection('home-section');
-			});
-			document.querySelector('#rifas')?.addEventListener('click', e => {
-				e.preventDefault();
-				showSection('rifas-section');
-			});
-			document.querySelector('#contact')?.addEventListener('click', e => {
-				e.preventDefault();
-				showSection('contacto-section');
-				loadGoogleMaps();
-			});
-			document.querySelector('#comprar_numprin')?.addEventListener('click', e => {
-				e.preventDefault();
-				showSection('carton-num');
-			});
-			document.querySelector('#comprar_num')?.addEventListener('click', e => {
-				e.preventDefault();
-				showSection('carton-num');
-			});
-
-			// En la sección de JavaScript existente, agrega esto:
-
-			// Mostrar sección de premios
-			document.querySelector('#premios')?.addEventListener('click', e => {
-				e.preventDefault();
-				showSection('showpremios');
-
-				// Inicializar la galería de premios
-				initPremiosGallery();
-			});
-
-			// Función para inicializar la galería de premios
-			// Función para inicializar la galería de premios
-			function initPremiosGallery() {
-				const thumbItems = document.querySelectorAll('.thumb-item');
-				const detalleImagen = document.getElementById('detalle-imagen');
-				const detalleInfo = document.getElementById('detalle-info');
-
-				// Datos de los premios desde PHP
-				const premiosData = <?php echo json_encode($premios); ?>;
-
-				if (thumbItems.length > 0 && premiosData.length > 0) {
-					// Seleccionar el primer premio por defecto
-					thumbItems[0].classList.add('active');
-
-					// Manejar clic en los thumbnails
-					thumbItems.forEach((item, index) => {
-						item.addEventListener('click', () => {
-							// Remover clase active de todos los thumbnails
-							thumbItems.forEach(thumb => thumb.classList.remove('active'));
-
-							// Agregar clase active al thumbnail seleccionado
-							item.classList.add('active');
-
-							// Actualizar el detalle del premio
-							const premio = premiosData[index];
-							if (premio) {
-								detalleImagen.src = 'resources/premios/' + premio.foto;
-								detalleImagen.alt = premio.name;
-
-								detalleInfo.innerHTML = `
-                        <h2>${premio.name}</h2>
-                        <p>${premio.descripcion || ''}</p>
-                        <div class="premio-caracteristicas">
-                            ${premio.valor ? `<p><strong>Valor:</strong> $${parseFloat(premio.valor).toLocaleString('es-ES', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>` : ''}
-                            <p><strong>Posición:</strong> ${premio.posicion}</p>
-                        </div>
-                    `;
-							}
-						});
-					});
-				}
-			}
-
-
-
-			// Valor total de números disponibles, esto deberías pasarlo desde PHP si es dinámico
-			const totalNumeros = <?php echo intval($sorteosActivos['qtynumeros']); ?>;
-
-			function generarTablaNumeros(start, end) {
-				const tabla = document.querySelector('.numeros-tabla');
-				tabla.innerHTML = ''; // Limpiamos la tabla actual
-				// Convertir los números vendidos a formato 3 dígitos (001, 015, etc.)
-				const numerosVendidos = <?php echo json_encode(array_map(function ($t) {
-											return str_pad($t['numero'], 3, '0', STR_PAD_LEFT);
-										}, $tickets)); ?>;
-				let num = start;
-				for (let i = 0; i < 10; i++) {
-					const row = document.createElement('tr');
-					for (let j = 0; j < 10; j++) {
-						if (num <= end && num < totalNumeros) {
-							const numeroFormateado = String(num).padStart(3, '0');
-							const estaVendido = numerosVendidos.includes(numeroFormateado);
-
-							const cell = document.createElement('td');
-							const link = document.createElement('a');
-							link.href = estaVendido ? 'javascript:void(0)' : '#'; // link.href = '#';
-							const div = document.createElement('div');
-							div.className = 'carton-numero ' + (estaVendido ? 'vendido' : 'disponible');
-							div.textContent = numeroFormateado;
-
-							if (estaVendido) {
-								div.title = 'Número ya vendido';
-							} else {
-								div.addEventListener('click', function() {
-									// Aquí puedes agregar la lógica para seleccionar el número
-									console.log('Número seleccionado:', numeroFormateado);
-								});
-							}
-							link.appendChild(div);
-							cell.appendChild(link);
-							row.appendChild(cell);
-							num++;
-						}
-					}
-					tabla.appendChild(row);
-				}
-			}
-
-			// Activamos el comportamiento en todos los botones de rango
-			document.querySelectorAll('.rango-btn').forEach(btn => {
-				btn.addEventListener('click', function(e) {
-					e.preventDefault();
-
-					const start = parseInt(this.getAttribute('data-start'));
-					const end = parseInt(this.getAttribute('data-end'));
-					generarTablaNumeros(start, end);
-				});
-			});
-
-			// Llenamos la tabla inicialmente con los primeros 100 números
-			generarTablaNumeros(0, 99);
-
-			// Menú hamburguesa para móviles
-			const menuToggle = document.querySelector('.menu-toggle');
-			const mainNav = document.querySelector('.main-nav');
-
-			if (menuToggle && mainNav) {
-				// Función para alternar el menú
-				const toggleMenu = () => {
-					menuToggle.classList.toggle('active');
-					mainNav.classList.toggle('active');
-
-					// Bloquear el scroll del body cuando el menú está abierto
-					document.body.style.overflow = mainNav.classList.contains('active') ? 'hidden' : '';
-				};
-
-				// Evento para el botón hamburguesa
-				menuToggle.addEventListener('click', toggleMenu);
-
-				// Cerrar menú al hacer clic en un enlace
-				document.querySelectorAll('.main-nav a').forEach(link => {
-					link.addEventListener('click', () => {
-						if (mainNav.classList.contains('active')) {
-							toggleMenu();
-						}
-					});
-				});
-
-				// Cerrar menú al hacer clic fuera de él
-				document.addEventListener('click', (e) => {
-					if (mainNav.classList.contains('active') &&
-						!e.target.closest('.main-nav') &&
-						!e.target.closest('.menu-toggle')) {
-						toggleMenu();
-					}
-				});
-
-				// Manejar eventos táctiles para mejor experiencia en móviles
-				menuToggle.addEventListener('touchstart', (e) => {
-					e.preventDefault();
-					toggleMenu();
-				}, {
-					passive: false
-				});
-			}
-			// Slider de premios
-			const slider = document.querySelector('.slider');
-			const dotsContainer = document.querySelector('.slider-dots');
-			const prevBtn = document.querySelector('.prev-btn');
-			const nextBtn = document.querySelector('.next-btn');
-
-			const premiosImages = [
+		window.appData = {
+			totalNumeros: <?php echo intval($sorteosActivos['qtynumeros']); ?>,
+			numerosVendidos: <?php echo json_encode(array_map(function ($t) {
+									return str_pad($t['numero'], 3, '0', STR_PAD_LEFT);
+								}, $tickets)); ?>,
+			premiosData: <?php echo json_encode($premios); ?>,
+			premiosImages: [
 				'resources/premios/celular.jpeg',
 				'resources/premios/Moto.jpeg',
 				'resources/premios/Viaje.jpeg'
-			];
-
-			let currentSlide = 0;
-			let slideInterval;
-
-			function renderSlider() {
-				if (!slider || !dotsContainer) return;
-				slider.innerHTML = '';
-				dotsContainer.innerHTML = '';
-
-				premiosImages.forEach((src, i) => {
-					const slide = document.createElement('div');
-					slide.className = 'slide';
-					slide.style.minWidth = '100%';
-
-					const img = document.createElement('img');
-					img.src = src;
-					img.alt = `Premio ${i + 1}`;
-					slide.appendChild(img);
-					slider.appendChild(slide);
-
-					const dot = document.createElement('div');
-					dot.className = 'dot' + (i === 0 ? ' active' : '');
-					dot.addEventListener('click', () => goToSlide(i));
-					dotsContainer.appendChild(dot);
-				});
-
-				startAutoSlide();
-			}
-
-			function goToSlide(i) {
-				currentSlide = i;
-				slider.style.transform = `translateX(-${i * 100}%)`;
-				document.querySelectorAll('.dot').forEach((d, index) => d.classList.toggle('active', index === i));
-			}
-
-			function nextSlide() {
-				goToSlide((currentSlide + 1) % premiosImages.length);
-			}
-
-			function prevSlide() {
-				goToSlide((currentSlide - 1 + premiosImages.length) % premiosImages.length);
-			}
-
-			function startAutoSlide() {
-				clearInterval(slideInterval);
-				slideInterval = setInterval(nextSlide, 5000);
-			}
-
-			nextBtn?.addEventListener('click', () => {
-				nextSlide();
-				startAutoSlide();
-			});
-			prevBtn?.addEventListener('click', () => {
-				prevSlide();
-				startAutoSlide();
-			});
-
-			slider?.addEventListener('mouseenter', () => clearInterval(slideInterval));
-			slider?.addEventListener('mouseleave', startAutoSlide);
-
-			renderSlider();
-
-			// Cargar Google Maps solo si no ha sido cargado
-			let mapLoaded = false;
-
-			function initMap() {
-				const ubicacion = {
-					lat: 7.8891,
-					lng: -72.5078
-				};
-				const map = new google.maps.Map(document.getElementById("mapa"), {
-					zoom: 16,
-					center: ubicacion,
-				});
-				new google.maps.Marker({
-					position: ubicacion,
-					map: map,
-					title: "Los Audaces",
-				});
-			}
-
-			function loadGoogleMaps() {
-				if (mapLoaded) return;
-				const script = document.createElement('script');
-				script.src = 'https://maps.googleapis.com/maps/api/js?key=TU_API_KEY_MAPS&callback=initMap';
-				script.async = true;
-				script.defer = true;
-				document.body.appendChild(script);
-				mapLoaded = true;
-			}
-			// Mostrar modal de login
-			document.querySelector('#login').addEventListener('click', function(e) {
-				e.preventDefault();
-				document.getElementById('loginModal').style.display = 'block';
-			});
-
-			// Cerrar modal de login
-			document.getElementById('closeLoginModal').addEventListener('click', function() {
-				document.getElementById('loginModal').style.display = 'none';
-				document.getElementById('loginMessage').textContent = '';
-			});
-
-			// Envío del formulario de login por AJAX
-			document.getElementById('loginForm').addEventListener('submit', function(e) {
-				e.preventDefault();
-
-				const login = document.getElementById('login').value;
-				const password = document.getElementById('password').value;
-
-				fetch('login.php', {
-						method: 'POST',
-						headers: {
-							'Content-Type': 'application/x-www-form-urlencoded'
-						},
-						body: `login=${encodeURIComponent(login)}&password=${encodeURIComponent(password)}`
-					})
-					.then(response => response.text())
-					.then(data => {
-						const mensaje = document.getElementById('loginMessage');
-						if (data.includes('Bienvenido')) {
-							mensaje.textContent = data;
-							mensaje.style.color = 'green';
-							setTimeout(() => {
-								document.getElementById('loginModal').style.display = 'none';
-								// Aquí podrías actualizar el navbar o mostrar datos del usuario
-							}, 1500);
-						} else {
-							mensaje.textContent = data;
-							mensaje.style.color = 'red';
-						}
-					})
-					.catch(error => {
-						console.error('Error:', error);
-					});
-			});
-
-		});
+			]
+		};
 	</script>
+
+	<!-- Cargar el módulo principal -->
+	<script type="module" src="js/main.js"></script>
+
+	<!-- Google Maps (mantener este script al final) -->
+	<script async defer src="https://maps.googleapis.com/maps/api/js?key=TU_API_KEY_MAPS&callback=initMap"></script>
 
 
 	<script async defer src="https://maps.googleapis.com/maps/api/js?key=TU_API_KEY_MAPS&callback=initMap"></script>

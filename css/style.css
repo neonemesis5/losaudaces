@@ -1083,7 +1083,7 @@ button[type="submit"]:hover {
 }
 
 /* Responsividad para cartón de números */
-@media (max-width: 768px) {
+/* @media (max-width: 768px) {
     .carton-numeros {
         margin-top: 100px;
         padding: 1rem;
@@ -1093,6 +1093,50 @@ button[type="submit"]:hover {
         height: 35px;
         width: 35px;
         font-size: 0.9rem;
+    }
+} */
+ /* Ajustes para móviles */
+@media (max-width: 768px) {
+    /* Reduce tamaño de celdas y números */
+    .numeros-tabla td {
+        padding: 3px !important;
+    }
+    
+    .numero, 
+    .carton-numero {
+        height: 28px !important;
+        width: 28px !important;
+        font-size: 0.7em !important;
+        margin: 1px !important;
+    }
+    
+    /* Ajusta el contenedor principal */
+    .carton-numeros {
+        padding: 10px 5px !important;
+        margin: 120px 0 0 0 !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        background-size: cover !important;
+        background-position: center !important;
+    }
+    
+    /* Ajusta botones de rango */
+    .rango-btn {
+        padding: 3px 6px !important;
+        font-size: 0.7em !important;
+        margin: 2px !important;
+    }
+    
+    /* Asegura que la tabla no desborde */
+    .numeros-container {
+        overflow-x: auto;
+        width: 100%;
+        padding: 0 5px;
+        box-sizing: border-box;
+    }
+    
+    .numeros-tabla {
+        margin: 0 auto;
     }
 }
 
@@ -1370,4 +1414,87 @@ button[type="submit"]:hover {
 
 .modal-content button:hover {
     background-color: #45a049;
+}
+
+/* Estilos para el carrito flotante */
+#shopcart {
+    position: fixed;
+    top: 420px;
+    right: 20px;
+    width: 280;
+    max-height: 80vh;
+    z-index: 1000;
+    background: linear-gradient(to bottom, 
+                rgba(140, 1, 154, 0.9) 0%, 
+                rgba(140, 1, 154, 0.7) 50%, 
+                rgba(140, 1, 154, 0.5) 100%);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    display: none; /* Inicialmente oculto */
+    transition: all 0.3s ease;
+}
+
+#shopcart .body {
+    padding: 10px;
+    overflow-y: auto;
+    max-height: calc(80vh - 120px);
+}
+
+#shopcart h2 {
+    font-size: 1.5rem;
+    margin: 0;
+    padding: 15px;
+    background: black;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.cart {
+    margin-top: 15px;
+}
+
+.cart-header, .cart-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+}
+
+.cart-items {
+    max-height: 200px;
+    overflow-y: auto;
+    margin: 10px 0;
+}
+
+.buy-btn {
+    width: 100%;
+    padding: 12px;
+    background: #28a745;/*136f04*/
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin-top: 10px;
+}
+
+.buy-btn:hover {
+    background: #218838;
+}
+
+hr {
+    border: none;
+    height: 1px;
+    background-color: #e9ecef;
+    margin: 10px 0;
+}
+
+/* Para pantallas pequeñas */
+@media (max-width: 768px) {
+    #shopcart {
+        width: 90%;
+        right: 5%;
+        left: 5%;
+    }
 }
