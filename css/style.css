@@ -1447,7 +1447,7 @@ button[type="submit"]:hover {
 /* Estilos para el carrito flotante */
 #shopcart {
     position: fixed;
-    top: 420px;
+    top: 320px;
     right: 20px;
     width: 280;
     max-height: 80vh;
@@ -1492,6 +1492,15 @@ button[type="submit"]:hover {
     max-height: 200px;
     overflow-y: auto;
     margin: 10px 0;
+	display: flex;
+	text-align: center;
+}
+.cart-item {
+	margin: 0 3px;
+}
+.remove-item{
+	cursor: pointer;
+	/* margin: 0 auto; */
 }
 
 .buy-btn {

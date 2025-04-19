@@ -457,6 +457,7 @@ ini_set('error_log', __DIR__ . '/error.log');
 			numerosVendidos: <?php echo json_encode(array_map(function ($t) {
 									return str_pad($t['numero'], 3, '0', STR_PAD_LEFT);
 								}, $tickets)); ?>,
+			precioNumero: <?php echo floatval(str_replace(',', '.', $sorteosActivos['precio'])); ?>,
 			premiosData: <?php echo json_encode($premios); ?>,
 			premiosImages: [
 				'resources/premios/celular.jpeg',

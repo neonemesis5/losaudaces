@@ -24,7 +24,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Configurar tabla de tickets
     setupTicketsTable(
         window.appData.totalNumeros || 0,
-        window.appData.numerosVendidos || []
+        window.appData.numerosVendidos || [],
+        window.appData.precioNumero || 0
     );
     
     // Configurar autenticación
