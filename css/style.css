@@ -863,32 +863,39 @@ section.sorteos-container .btn-comprar:hover {
 }
 
 #contacto-section {
-    display: flex; /* Activa el modelo flexbox */
-    flex-direction: row; /* Alinea los elementos en horizontal */
-    gap: 20px; /* Espacio entre los elementos */
-    padding: 10px;
-    max-width: 1200px; /* Ancho máximo del contenedor */
-    margin: 0 auto; /* Centrar el contenedor */
-	margin-top:200px;
+    display: flex;
+    flex-direction: row; /* Elementos en horizontal */
+    flex-wrap: nowrap; /* Evita que se envuelvan */
+    justify-content: space-between; /* Distribuye el espacio */
+    align-items: flex-start; /* Alinea al inicio */
+    gap: 20px; /* Espacio entre elementos */
+    padding: 20px;
+    max-width: 1200px;
+    margin: 200px auto 0; /* Margen superior de 200px */
+    width: 95%; /* Ancho relativo */
 }
 
 #mapa {
-    flex: 1; /* Ocupa 1 parte del espacio disponible */
-    min-width: 300px; /* Ancho mínimo del mapa */
-    height: 400px; /* Altura fija */
-    border-radius: 8px; /* Bordes redondeados */
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1); /* Sombra suave */
+    flex: 1; /* Ocupa espacio disponible */
+    min-width: 300px;
+    height: 400px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 20px; /* Para que quede fijo al hacer scroll */
 }
 
+
 #formContacto {
-    flex: 1; /* Ocupa 1 parte del espacio disponible */
-    min-width: 300px; /* Ancho mínimo del formulario */
+    flex: 1; /* Ocupa espacio disponible */
+    min-width: 300px;
     padding: 20px;
     background: gold;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 20px; /* Para que quede fijo al hacer scroll */
 }
-
 /* Estilos adicionales para el formulario */
 #formContacto h2 {
     margin-top: 0;
@@ -934,16 +941,37 @@ button[type="submit"]:hover {
 }
 
 
-/* Responsive: cuando la pantalla es pequeña, apilar verticalmente */
+
+/* Ajustes para pantallas medianas (tablets) */
+@media (max-width: 992px) {
+    #contacto-section {
+        flex-direction: row;
+        gap: 170px;
+    }
+    
+    #mapa, #formContacto {
+        min-width: 250px;
+    }
+}
+
+/* Ajustes para móviles */
 @media (max-width: 768px) {
     #contacto-section {
         flex-direction: column;
+        margin-top: 170px; /* Menos margen superior en móviles */
     }
     
     #mapa, #formContacto {
         width: 100%;
+        min-width: auto;
+        position: static; /* Quita el sticky en móviles */
+    }
+    
+    #mapa {
+        height: 300px; /* Altura menor en móviles */
     }
 }
+
 
 /* Estilos para la galería de premios */
 .premios-container {
