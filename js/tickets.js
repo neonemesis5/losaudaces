@@ -1,6 +1,8 @@
+export let numerosSeleccionados = [];
+window.numerosSeleccionados = numerosSeleccionados;
 // Generación de tabla de números
 export const setupTicketsTable = (totalNumeros, numerosVendidos, precioNumero) => {
-    const numerosSeleccionados = [];
+    // const numerosSeleccionados = [];
     // Función para actualizar el carrito
     function actualizarCarrito() {
         const cartItems = document.querySelector('.cart-items');

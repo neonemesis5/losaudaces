@@ -22,7 +22,24 @@ require __DIR__ . '/controllers/cartoncontroller.php';
 require __DIR__ . '/controllers/premioscontroller.php';
 require __DIR__ . '/controllers/entidadescontroller.php';
 require __DIR__ . '/controllers/personacontroller.php';
+require __DIR__ . '/controllers/compracontroller.php';
 
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Siempre usar $_POST para datos del formulario
+    $input = $_POST;
+    
+    // Convertir campos JSON a arrays
+    if (!empty($input['numeros'])) {
+        $input['numeros'] = json_decode($input['numeros'], true);
+    }
+
+    if (!empty($input['action']) && $input['action'] === 'registrarCompra') {
+        $compraController = new CompraController();
+        $compraController->registrarCompra();
+        exit;
+    }
+}
 
 // Crear instancia del controlador
 $sorteoController = new SorteoController();
@@ -51,19 +68,13 @@ session_regenerate_id(true);
 // Configuración de zona horaria
 date_default_timezone_set('America/Bogota');
 
-// Protección básica contra inyecciones
-if (isset($_SERVER['QUERY_STRING'])) {
-	$queryString = $_SERVER['QUERY_STRING'];
-	if (preg_match('/[^a-zA-Z0-9_-]/', $queryString)) {
-		header("HTTP/1.1 400 Bad Request");
-		exit('Solicitud inválida');
-	}
-}
 
 // Configuración de manejo de errores
 ini_set('display_errors', 0);
 ini_set('log_errors', 1);
 ini_set('error_log', __DIR__ . '/error.log');
+
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -171,51 +182,6 @@ ini_set('error_log', __DIR__ . '/error.log');
 				<table class="numeros-tabla"></table>
 			</section>
 
-			<section id="form-comprar" style="display: none;"> <!-- OCULTA POR DEFECTO formulario de registro de usuario para compra -->
-				<form id="registroForm" method="post" action="" style="display: none; ">
-					<h1>Registrate</h1>
-
-					<div class="form-group">
-						<label for="nombre_apellido">Nombre y Apellido:</label>
-						<input type="text" id="nombre_apellido" name="nombre_apellido" placeholder="Ingrese su nombre completo" required value="Ana Reimy">
-					</div>
-
-					<div class="form-group">
-						<label for="telefono">Teléfono:</label>
-						<input type="tel" id="telefono" name="telefono" placeholder="Ingrese su número de teléfono" required value="04241234567">
-					</div>
-
-					<div class="form-group">
-						<label for="correo">Correo Electrónico:</label>
-						<input type="email" id="correo" name="correo" placeholder="Ingrese su correo electrónico" required value="usuario@ejemplo.com">
-					</div>
-
-					<div class="form-group">
-						<label for="ubicacion">Ubicación:</label>
-						<select id="ubicacion" name="ubicacion" required>
-							<option value="">Seleccione su país</option>
-							<?php foreach ($countries as $code => $name): ?>
-								<option value="<?php echo $code; ?>" <?php echo ($name == 'Venezuela') ? 'selected' : ''; ?>>
-									<?php echo $name; ?>
-								</option>
-							<?php endforeach; ?>
-						</select>
-					</div>
-
-					<div class="form-group">
-						<label for="identificacion">Número de Identificación:</label>
-						<input type="text" id="identificacion" name="identificacion" placeholder="Ingrese su número de identificación" required value="V12345678">
-					</div>
-
-					<div class="form-group checkbox-group">
-						<input type="checkbox" id="condiciones" name="condiciones" required>
-						<label for="condiciones">He leído las condiciones y acepto las mismas.</label>
-					</div>
-
-					<button type="submit" class="submit-btn">ENVIAR</button>
-				</form>
-			</section>
-
 			<section id="contacto-section" style="display: none;">
 				<!-- MAPA DE GOOGLE -->
 				<div id="mapa" style="width: 100%; height: 300px; margin-top: 20px;"></div>
@@ -225,12 +191,12 @@ ini_set('error_log', __DIR__ . '/error.log');
 
 					<div class="form-group">
 						<label for="nombre">Nombre:</label>
-						<input type="text" id="nombre" name="nombre" required>
+						<input type="text" id="nombrec" name="nombrec" required>
 					</div>
 
 					<div class="form-group">
 						<label for="email">Correo Electrónico:</label>
-						<input type="email" id="email" name="email" required>
+						<input type="email" id="emailc" name="emailc" required>
 					</div>
 
 					<div class="form-group">
@@ -285,7 +251,7 @@ ini_set('error_log', __DIR__ . '/error.log');
 				<div class="modal-content">
 					<span class="close">&times;</span>
 					<h2>Registro de Cliente</h2>
-					<form id="registroClienteForm">
+					<form id="registroClienteForm" onsubmit="return false;" > 
 						<label for="nombre">Nombre:</label>
 						<input type="text" id="nombre" class="input" name="nombre" required>
 
@@ -472,7 +438,6 @@ ini_set('error_log', __DIR__ . '/error.log');
 
 	<!-- Google Maps (mantener este script al final) -->
 	<script async defer src="https://maps.googleapis.com/maps/api/js?key=TU_API_KEY_MAPS&callback=initMap"></script>
-	<!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=TU_API_KEY_MAPS&callback=initMap"></script> -->
 </body>
 
 </html>
